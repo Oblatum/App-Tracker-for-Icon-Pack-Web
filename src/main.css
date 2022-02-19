@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .own-th {
+        @apply border-2 border-blue-600 px-4 py-2 text-blue-800 text-center;
+    }
+
+    .own-td {
+        @apply border-2 border-blue-600 px-4 py-2 text-blue-400 break-words;
+    }
+}

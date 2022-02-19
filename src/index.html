@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
+    <title>App Tracker for Icon Pack Web</title>
+  </head>
+  <body class="bg-gradient-to-r from-blue-50 to-blue-100">
+    <div class="rounded-t-xl overflow-hidden p-6">
+      <form id="form" class="flex w-full max-w-xl mx-auto space-x-3">
+        <select
+          id="selector"
+          class="flex-shrink-0 bg-transparent text-gray-400 sm:text-base text-xs font-semibold py-2 px-2 rounded-lg focus:outline-none focus:ring-2 ring-gray-500 shadow-md"
+        >
+          <option value="search">找栗子</option>
+          <option value="all">找全部</option>
+          <option value="sig">找全含参</option>
+        </select>
+        <input
+            id="keyword"
+          class="flex-1 appearance-none border border-transparent w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-md rounded-lg sm:text-base text-xs focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+          type="text"
+          placeholder="关键词……"
+        />
+        <input hidden
+        id="sig"
+        class="flex-1 appearance-none border border-transparent w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-md rounded-lg sm:text-base text-xs focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+        type="text"
+        placeholder="Signature..."
+      />
+        <input
+          class="flex-shrink-0 bg-blue-600 text-white sm:text-base text-xs font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-200 cursor-pointer"
+          type="submit" value="搜索"
+        >
+      </form>
+    </div>
+    <div id="result-area" class="p-6 w-full">
+        
+    </div>
+    <script src="./axios.js"></script>
+    <script src="./main.js"></script>
+  </body>
+</html>
