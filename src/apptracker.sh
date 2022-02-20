@@ -48,7 +48,6 @@ while getopts "s:a" opt; do
             done
             splitLine 3
             setTable ${table}
-            
         ;;
     esac
 done
