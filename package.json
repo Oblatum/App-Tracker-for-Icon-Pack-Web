@@ -89,7 +89,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tailwindcss -i ./src/main.css -o ./src/style.css"
+    "build": "tailwindcss -i ./src/main.css -o ./src/style.css",
+    "dev": "tailwindcss -i ./src/main.css -o ./src/style.css --watch"
   },
   "keywords": [],
   "author": "",
