@@ -169,8 +169,9 @@ function concopyLine() {
       let copyTpl = `<item component="ComponentInfo{${packageName}/${activityName}}" drawable="${appName}" />`;
       let p = navigator.clipboard.writeText(copyTpl);
       p.then(() => {
-        const x = ev.clientX,
-          y = ev.clientY;
+        console.log(ev);
+        const x = ev.pageX,
+          y = ev.pageY;
         conmsgTag(x, y);
       });
     });
