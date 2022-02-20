@@ -34,22 +34,21 @@ while getopts "s:a" opt; do
             json=`curl -s "$server_url${api_suffix[0]}?q=$kw&per=2147483647"`
             items=`echo $json | jq '.["items"]'`
             len=`echo $json | jq '.["metadata"]["total"]'`
-            if [ "$SHLVL" -eq "2" ]
-            then
-                table=""
+            
+            table=""
+            splitLine 3
+            setRow "应用ID" "包名" "启动项名"
+            for (( i=0; i<len; i=i+1 )); do
+                appName=`echo $items | jq ".[$i][\"appName\"]"`
+                id=`echo $items | jq ".[$i][\"id\"]"`
+                packageName=`echo $items | jq ".[$i][\"packageName\"]"`
+                activityName=`echo $items | jq ".[$i][\"activityName\"]"`
                 splitLine 3
-                setRow "应用ID" "包名" "启动项名"
-                for (( i=0; i<len; i=i+1 )); do
-                    appName=`echo $items | jq ".[$i][\"appName\"]"`
-                    id=`echo $items | jq ".[$i][\"id\"]"`
-                    packageName=`echo $items | jq ".[$i][\"packageName\"]"`
-                    activityName=`echo $items | jq ".[$i][\"activityName\"]"`
-                    splitLine 3
-                    setRow $id $packageName $activityName
-                done
-                splitLine 3
-                setTable ${table}
-            fi
+                setRow $id $packageName $activityName
+            done
+            splitLine 3
+            setTable ${table}
+            
         ;;
     esac
 done
