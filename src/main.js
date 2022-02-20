@@ -6,7 +6,7 @@ const server_url = "https://bot.k2t3k.tk/api";
 const api_list = {
   search: "/search",
   all: "/getAll",
-  sig: "/getAll",
+  sig: "/getAll/",
 };
 
 axios.defaults.baseURL = server_url;
@@ -78,7 +78,7 @@ formEl.addEventListener("submit", (ev) => {
       });
       break;
     case "sig":
-      params = `?signature=${keywordEl.value}&per=2147483647`;
+      params = `${keywordEl.value}?per=2147483647`;
       conloadingIcon();
       fetchAPI(todo, params).then((body) => {
         lastRsp = body;
