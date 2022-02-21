@@ -62,7 +62,7 @@ formEl.addEventListener("submit", (ev) => {
   const todo = selectorEl.value;
   switch (todo) {
     case "search":
-      params = `?q=${keywordEl.value}&per=2147483647`;
+      params = `?q=${encodeURIComponent(keywordEl.value)}&per=2147483647`;
       conloadingIcon();
       fetchAPI(todo, params).then((body) => {
         lastRsp = body;
@@ -78,7 +78,7 @@ formEl.addEventListener("submit", (ev) => {
       });
       break;
     case "sig":
-      params = `${keywordEl.value}?per=2147483647`;
+      params = `${encodeURIComponent(keywordEl.value)}?per=2147483647`;
       conloadingIcon();
       fetchAPI(todo, params).then((body) => {
         lastRsp = body;
