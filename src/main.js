@@ -5,6 +5,7 @@
 const server_url = "https://bot.k2t3k.tk/api";
 const api_list = {
   search: "/search",
+  regex: "/search/regex",
   all: "/getAll",
   sig: "/getAll/",
 };
@@ -41,6 +42,12 @@ selectorEl.addEventListener("change", (ev) => {
       keywordEl.value = "";
       keywordEl.placeholder = "关键词……";
       break;
+    case "regex":
+      keywordEl.hidden = false;
+      keywordEl.required = true;
+      keywordEl.value = "";
+      keywordEl.placeholder = "正则表达式……";
+      break;
     case "all":
       keywordEl.hidden = true;
       keywordEl.required = false;
@@ -62,6 +69,14 @@ formEl.addEventListener("submit", (ev) => {
   const todo = selectorEl.value;
   switch (todo) {
     case "search":
+      params = `?q=${encodeURIComponent(keywordEl.value)}&per=2147483647`;
+      conloadingIcon();
+      fetchAPI(todo, params).then((body) => {
+        lastRsp = body;
+        constructTb(body.data);
+      });
+      break;
+    case "regex":
       params = `?q=${encodeURIComponent(keywordEl.value)}&per=2147483647`;
       conloadingIcon();
       fetchAPI(todo, params).then((body) => {
