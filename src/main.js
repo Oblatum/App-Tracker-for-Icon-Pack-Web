@@ -110,7 +110,7 @@ formEl.addEventListener("submit", (ev) => {
  * ***/
 
 function constructTb(data) {
-  const rawTableHtml = `<div class="kwmsg w-full text-blue-600 sm:text-base text-xs flex justify-between my-1"><span class="inline-block py-2">搜索结果：${keywordEl.value}</span><div class="space-x-3"><span id="switch-name" class="p-2 inline-block bg-slate-50 rounded-md hover:shadow cursor-pointer text-blue-600 underline">name</span><span id="switch-id" class="p-2 inline-block bg-slate-50 rounded-md hover:shadow cursor-pointer">id</span></div></div><table class="border-collapse border-blue-600 border-2 table-fixed w-full text-xs sm:text-base"><thead class="bg-blue-200"><tr><th class="own-th">应用名</th><th class="own-th">包名</th><th class="own-th">启动项名</th></tr></thead><tbody>?</tbody></table>`;
+  const rawTableHtml = `<div class="kwmsg w-full text-blue-600 sm:text-base text-xs flex justify-between my-1"><span class="inline-block py-2">搜索结果：${keywordEl.value}</span><div class="space-x-3"><span id="switch-name" class="p-2 inline-block bg-slate-50 rounded-md hover:shadow cursor-pointer text-blue-600 underline">name</span><span id="switch-id" class="p-2 inline-block bg-slate-50 rounded-md hover:shadow cursor-pointer">id</span></div></div><table class="border-collapse border-blue-600 border-2 table-fixed w-full text-xs sm:text-base"><thead class="bg-blue-200"><tr><th class="own-th">应用名</th><th class="own-th">包名</th><th class="own-th">启动项名</th></tr></thead><tbody>yanrentql1145141919810</tbody></table>`;
   let total = data.metadata.total;
   let seasoning = "";
   let ripeTableHtml;
@@ -121,7 +121,7 @@ function constructTb(data) {
     seasoning += `<td class="own-td">${v.activityName}</td>`;
     seasoning += "</tr>";
   });
-  ripeTableHtml = rawTableHtml.replace("?", seasoning);
+  ripeTableHtml = rawTableHtml.replace("yanrentql1145141919810", seasoning);
   const newtbEl = document.createElement("table");
   resultEl.replaceChildren(newtbEl);
   newtbEl.outerHTML = ripeTableHtml;
