@@ -189,6 +189,9 @@ function concopyLine() {
       p.then(() => {
         const x = ev.pageX,
           y = ev.pageY;
+          console.log(ev.pageY);
+          console.log(ev.offsetY);
+          console.log(ev);
         conmsgTag(x, y);
       });
     });
