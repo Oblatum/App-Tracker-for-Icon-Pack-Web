@@ -182,16 +182,19 @@ function concopyLine() {
         packageName = datas[1].textContent,
         activityName = datas[2].textContent;
       let copyTpl = "";
-      if ((rsThEls[0].textContent === "应用名"))
+      if (rsThEls[0].textContent === "应用名")
         copyTpl = `<item component="ComponentInfo{${packageName}/${activityName}}" drawable="${appName}" />`;
       else copyTpl = appName;
       let p = navigator.clipboard.writeText(copyTpl);
       p.then(() => {
+        const docEl = document.documentElement;
+        let docTop = getComputedStyle(docEl).top,
+        offsetY = parseInt(docTop);
+        if (isNaN(offsetY)) {
+          offsetY = 0;
+        }
         const x = ev.pageX,
-          y = ev.pageY;
-          console.log(ev.pageY);
-          console.log(ev.offsetY);
-          console.log(ev);
+          y = ev.pageY - offsetY;
         conmsgTag(x, y);
       });
     });
