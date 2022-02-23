@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>搜索提示</title>
+</head>
+<body>
+<h2>搜索提示</h2>
+
+<h3>普通搜索</h3>
+
+<ul>
+<li><p><code>A 空格 B</code> 表示既包含 <code>A</code> 也包含 <code>B</code>。</p>
+
+<blockquote>
+<p>搜索：<code>腾讯 管家</code><br/>
+搜索结果：<code>腾讯手机管家</code> <code>腾讯相册管家</code></p>
+</blockquote></li>
+<li><p>使用 <code>|</code> 表示要么包含 <code>A</code> 要么包含 <code>B</code>。</p>
+
+<blockquote>
+<p>搜索：<code>腾讯|管家</code><br/>
+搜索结果：<code>手机管家</code> <code>腾讯动漫</code> <code>腾讯地图</code> <code>网易账号管家</code>...</p>
+</blockquote></li>
+<li><p>空格和 <code>|</code> 可以多次使用，但不支持嵌套。</p>
+
+<blockquote>
+<p>搜索：<code>腾讯 管家|网易 管家|平安 管家</code><br/>
+搜索结果：<code>腾讯手机管家</code> <code>腾讯相册管家</code> <code>网易账号管家</code> <code>平安金管家</code></p>
+</blockquote></li>
+</ul>
+
+<h3>正则搜索</h3>
+
+<p>正则搜索支持使用正则表达式进行搜索，搜索范围为应用名、包名、启动项名，大小写不敏感，默认单行模式。</p>
+
+<p>⚠️注意，由于数据量较大，正则表达式较为复杂，搜索时间可能长达数秒，请耐心等待，不要多次提交搜索。</p>
+
+<p>为了帮助不熟悉正则表达式的用户，下面列出一些常用的正则表达式。</p>
+
+<p><code>^腾讯</code>：搜索开头为<code>腾讯</code>的所有项目。</p>
+
+<p><code>音乐$</code>：搜索结尾为<code>音乐</code>的所有项目。</p>
+
+<p><code>^QQ音乐$</code>：搜索全名为<code>QQ音乐</code>的项目，不多不少。</p>
+
+<p><code>^小米(?!路由器)(?!运动)</code>： 搜索开头为<code>小米</code>，且之后不出现<code>路由器</code>或<code>运动</code>的所有项目。</p>
+
+<p><code>^com\.tencent.*SplashActivity$</code>：搜索开头为<code>com.tencent</code>，中间为任意内容，结尾为<code>SplashActivity</code> 的所有项目。</p>
+
+<p><code>腾讯\p{Han}{2}\b</code>：腾讯后必须是两个汉字，然后是一个分隔符（例如空格或者半角符号）</p>
+</body>
+</html>
