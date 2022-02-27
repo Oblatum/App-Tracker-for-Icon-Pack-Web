@@ -245,6 +245,7 @@ body {
   animation: infobarmv 4s forwards;
   position: absolute;
   top: -5rem;
+  z-index: 999999;
 }
 
 @keyframes infobarmv {
