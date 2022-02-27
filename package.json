@@ -10,7 +10,8 @@
     "clean": "rm dist/bundle.js",
     "build-dev": "webpack --mode development",
     "dev": "webpack --mode development --watch",
-    "build-prod": "webpack --mode production"
+    "build-prod": "webpack --mode production",
+    "build": "webpack --mode production"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.0.0",
