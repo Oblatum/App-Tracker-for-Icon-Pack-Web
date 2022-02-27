@@ -14,4 +14,10 @@ declare module SearchAPIResData {
     items: ResItem[];
     metadata: ResMetadata;
   }
+
+  export interface IconRootObject {
+    image: string;
+    name: string;
+    url: string;
+}
 }

@@ -12,7 +12,9 @@ html {
   font-size: 14px;
 }
 
+
 body {
+  overflow: hidden;
   // background-image: linear-gradient(to bottom right, rgb(236, 185, 108),rgb(255, 91, 91),rgb(255, 0, 149)),linear-gradient(to bottom right, rgb(58, 211, 28),rgb(0, 132, 255),rgb(255, 230, 0));
 }
 
@@ -104,9 +106,13 @@ body {
   order: 3;
 }
 
-.tlt-area {
-  margin-top: 2rem;
+.rlt-area {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
+
+
 
 .rlt-tb {
   max-height: calc(100vh - 23rem);
@@ -115,6 +121,7 @@ body {
 
 .last-rlt {
     color: #334155;
+    flex: 1;
 }
 
 .tb {
@@ -122,7 +129,6 @@ body {
   table-layout: fixed;
   box-shadow: 5px 5px 1px rgba(0, 0, 0, 0.1);
   border-collapse: collapse;
-  // border-radius: 5px;
   color: #334155;
   position: relative;
 
@@ -133,6 +139,7 @@ body {
 
   thead tr:nth-child(1) {
     background-color: rgb(240, 240, 240);
+
   }
 
   thead {
@@ -145,6 +152,7 @@ body {
     padding: 0.9rem 0.25rem;
     border-bottom: 1px solid rgb(240, 240, 240);
     font-size: 0.9rem;
+    user-select: none;
   }
 
   tr:last-of-type td {
@@ -163,6 +171,69 @@ body {
     color: inherit;
     text-decoration: underline wavy;
   }
+}
+
+.lds-dual-ring {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid #334155;
+  border-color: #334155 transparent #334155 transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.copy-menu {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.9);
+  width: 10rem;
+  height: 8rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 0.9rem;
+  border-radius: 3px;
+  .copy-item {
+    display: flex;
+    justify-content: center;
+    padding: 0.25rem 0;
+    color: #334155;
+    user-select: none;
+    
+    .fa {
+      pointer-events: none;
+    }
+    cursor: default;
+    img {
+      width: 3rem;
+      object-fit: contain;
+      pointer-events: none;
+    }
+    &:first-child:hover {
+      background: unset;
+    }
+    &:hover {
+      background: rgb(230, 230, 230);
+    }
+
+  }
+}
+
+.clipboard-message {
+
 }
 
 @media (min-width: 640px) {
