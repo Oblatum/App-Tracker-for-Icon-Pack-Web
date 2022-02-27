@@ -1,6 +1,6 @@
 import "./styles.scss";
 import "./favicon.png";
-import loadinggif from "./loading.gif"
+import loadinggif from "./loading.gif";
 import "@fortawesome/fontawesome-free/js/all.js";
 import { searchAPI, regexAPI, allAPI, signatureAPI, iconAPI } from "./api";
 
@@ -36,7 +36,6 @@ function concopyLine() {
   let copyTokenEl = document.getElementById("copy-token");
   let copyIdEl = document.getElementById("copy-id");
   copyTokenEl?.addEventListener("click", (e) => {
-    
     let coim = e.target as HTMLDivElement;
     let comn = coim.parentElement as HTMLDivElement;
     let rowindex = comn.getAttribute("targetln") as string;
@@ -48,7 +47,13 @@ function concopyLine() {
     let copyTpl = `<item component="ComponentInfo{${packageName}/${activityName}}" drawable="${appName}" />`;
     let p = navigator.clipboard.writeText(copyTpl);
     p.then(() => {
-      console.log("复制 Token 成功");
+      let cpEl = document.createElement("div");
+      cpEl.classList.add("copy-success");
+      document.body.insertAdjacentElement("beforebegin", cpEl);
+      cpEl.innerHTML = `<span><i class="fa-solid fa-circle-check"></i>&nbsp;复制 appfilter.xml 成功</span>`;
+      setTimeout(() => {
+        cpEl.remove();
+      }, 4200);
     });
   });
 
@@ -62,7 +67,13 @@ function concopyLine() {
     let copyTpl = id;
     let p = navigator.clipboard.writeText(copyTpl as string);
     p.then(() => {
-      console.log("复制 Id 成功");
+      let cpEl = document.createElement("div");
+      cpEl.classList.add("copy-success");
+      document.body.insertAdjacentElement("beforebegin", cpEl);
+      cpEl.innerHTML = `<span><i class="fa-solid fa-circle-check"></i>&nbsp;复制 ID 成功</span>`;
+      setTimeout(() => {
+        cpEl.remove();
+      }, 4200);
     });
   });
 }
@@ -73,8 +84,8 @@ function concoMenu() {
     e.preventDefault();
 
     let tdEl = e.target as HTMLTableCellElement;
-    let trEl = tdEl.parentElement as HTMLTableRowElement
-    
+    let trEl = tdEl.parentElement as HTMLTableRowElement;
+
     const docEl = document.documentElement;
     let docTop = getComputedStyle(docEl).top,
       offsetY = parseInt(docTop);
@@ -108,19 +119,19 @@ function concoMenu() {
     let copyMenuEl = document.createElement("div");
 
     copyMenuEl.classList.add("copy-menu");
-    copyMenuEl.innerHTML = `<div class="copy-item"><img id="app-icon" src="${loadinggif}"></div><div id="copy-token" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 Token</div><div id="copy-id" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 Id</div>`;
+    copyMenuEl.innerHTML = `<div class="copy-item"><img id="app-icon" src="${loadinggif}"></div><div id="copy-token" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 appfilter.xml</div><div id="copy-id" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 Id</div>`;
     copyMenuEl.setAttribute("targetln", trEl.rowIndex.toString());
     copyMenuEl.style.position = "absolute";
     copyMenuEl.style.left = x + "px";
     copyMenuEl.style.top = y + "px";
-    iconAPI.get([packageName]).then(dt => {
-    let appIconEl = document.getElementById("app-icon") as HTMLImageElement;
-      if(appIconEl != null) {
+    iconAPI.get([packageName]).then((dt) => {
+      let appIconEl = document.getElementById("app-icon") as HTMLImageElement;
+      if (appIconEl != null) {
         let img = new Image();
         img.src = dt.data.image;
         img.onload = () => {
-          appIconEl.src = img.src
-        }
+          appIconEl.src = img.src;
+        };
       }
     });
 
