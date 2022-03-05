@@ -2,7 +2,7 @@ import "./styles.scss";
 import "./favicon.png";
 import loadinggif from "./loading.gif";
 import "@fortawesome/fontawesome-free/js/all.js";
-import { searchAPI, regexAPI, allAPI, signatureAPI, iconAPI } from "./api";
+import { appIconApi, appInfoApi, signatureAppInfoApi } from "./api_v2"
 
 function nowYear() {
   let dt = new Date();
@@ -78,6 +78,9 @@ function concopyLine() {
   });
 }
 
+
+
+
 function concoMenu() {
   let tbdEl = document.getElementById("tbd") as HTMLTableSectionElement;
   tbdEl.oncontextmenu = (e) => {
@@ -124,7 +127,9 @@ function concoMenu() {
     copyMenuEl.style.position = "absolute";
     copyMenuEl.style.left = x + "px";
     copyMenuEl.style.top = y + "px";
-    iconAPI.get([packageName]).then((dt) => {
+    appIconApi.fetch({query: {
+      appId: packageName
+    }}).then((dt) => {
       let appIconEl = document.getElementById("app-icon") as HTMLImageElement;
       if (appIconEl != null) {
         let img = new Image();
@@ -159,6 +164,26 @@ let yearEl = document.getElementById("year") as HTMLSpanElement;
 let srtpEl = document.getElementById("srtp") as HTMLSelectElement;
 let formEl = document.getElementById("form") as HTMLFormElement;
 let rltEl = document.getElementsByClassName("rlt-area")[0] as HTMLDivElement;
+let clseEl = document.getElementsByClassName("clse")[0] as HTMLSpanElement;
+let hiswtEl = document.getElementById("hiswt") as HTMLInputElement;
+
+
+hiswtEl.addEventListener("change", (e) => {
+  let el = e.target as HTMLInputElement;
+  let checked = el.checked;
+  let tbd = document.getElementById("tbd") as HTMLTableSectionElement;
+  if(checked && tbd) {
+  let trs = tbd.children;
+    for(let k in trs) {
+      console.log(trs[k]);
+    }
+  }
+});
+
+clseEl.addEventListener("click", () => {
+  document.getElementsByTagName("header")[0].hidden = true;
+});
+
 
 yearEl.textContent = nowYear().toString();
 srtpEl?.addEventListener("change", () => {
@@ -189,7 +214,13 @@ formEl.addEventListener("submit", (e) => {
     switch (srtpEl.value) {
       case "1":
         conloadingIcon();
-        searchAPI.get([kwEl.value, "1", "2147483647"]).then((dt) => {
+        appInfoApi.fetch({
+          query: {
+            q: kwEl.value,
+            page: "1",
+            per: "2147483647"
+          }
+        }).then((dt) => {
           lastKw = kwEl.value;
           rltEl.innerHTML = conTbTpl(dt.data);
           concoMenu();
@@ -197,7 +228,13 @@ formEl.addEventListener("submit", (e) => {
         break;
       case "2":
         conloadingIcon();
-        regexAPI.get([kwEl.value, "1", "2147483647"]).then((dt) => {
+        appInfoApi.fetch({
+          query: {
+            regex: kwEl.value,
+            page: "1",
+            per: "2147483647"
+          }
+        }).then((dt) => {
           lastKw = kwEl.value;
           rltEl.innerHTML = conTbTpl(dt.data);
           concoMenu();
@@ -205,7 +242,12 @@ formEl.addEventListener("submit", (e) => {
         break;
       case "3":
         conloadingIcon();
-        allAPI.get(["1", "2147483647"]).then((dt) => {
+        appInfoApi.fetch({
+          query: {
+            page: "1",
+            per: "2147483647"
+          }
+        }).then((dt) => {
           lastKw = kwEl.value;
           rltEl.innerHTML = conTbTpl(dt.data);
           concoMenu();
@@ -213,7 +255,15 @@ formEl.addEventListener("submit", (e) => {
         break;
       case "4":
         conloadingIcon();
-        signatureAPI.get(["1", "2147483647"], [kwEl.value]).then((dt) => {
+        signatureAppInfoApi.fetch({
+          query: {
+            page: "1",
+            per: "2147483647"
+          },
+          path: {
+            signature: kwEl.value
+          }
+        }).then((dt) => {
           lastKw = kwEl.value;
           rltEl.innerHTML = conTbTpl(dt.data);
           concoMenu();

@@ -7,6 +7,17 @@
     <title>App Tracker for Icon Pack Web</title>
   </head>
   <body>
+    <header>
+      <p>
+        两分钟时间，下载 Android 客户端帮助我们丰富数据库&nbsp;<a href="https://github.com/Oblatum/App-Tracker-for-Icon-Pack-Client-Side-Android-Version/releases/latest"
+          >DOWNLOAD&nbsp;<i class="fa fa-angle-right"></i
+        ></a>
+        <a href="http://www.coolapk.com/apk/ren.imyan.app_tracker"
+          >DOWNLOAD&nbsp;<i class="fa fa-angle-right"></i
+        ></a>
+      </p>
+      <span class="clse"><i class="fa fa-times"></i></span>
+    </header>
     <div id="app">
       <h1 class="headline">
         App Tracker for
@@ -19,21 +30,25 @@
       </h1>
 
       <div class="fm">
-        <form id="form">
-          <input id="kw" type="text" placeholder="关键词……" required />
-          <select name="srtp" id="srtp">
-            <option value="1">搜索</option>
-            <option value="2">正则</option>
-            <option value="3">浏览</option>
-            <option value="4">来源</option>
-          </select>
-          <button id="smt" type="submit"><i class="fa fa-search"></i></button>
-        </form>
+        <div class="form-wrap">
+          <form id="form">
+            <input id="kw" type="text" placeholder="关键词……" required />
+            <select name="srtp" id="srtp">
+              <option value="1">搜索</option>
+              <option value="2">正则</option>
+              <option value="3">浏览</option>
+              <option value="4">来源</option>
+            </select>
+            <button id="smt" type="submit"><i class="fa fa-search"></i></button>
+          </form>
+          <input type="checkbox" name="" id="hiswt">
+        </div>
       </div>
 
-      <div class="rlt-area">
-        
-      </div>
+      <div class="rlt-area"></div>
+
+
+
       <footer>
         <p class="ft-text">
           <span>&copy;2022-</span><span id="year"></span>
@@ -44,10 +59,5 @@
         </p>
       </footer>
     </div>
-
-
-
-
-
   </body>
 </html>
