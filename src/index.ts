@@ -2,7 +2,8 @@ import "./styles.scss";
 import "./favicon.png";
 import loadinggif from "./loading.gif";
 import "@fortawesome/fontawesome-free/js/all.js";
-import { appIconApi, appInfoApi, signatureAppInfoApi } from "./api_v2"
+import { appIconApi, appInfoApi, signatureAppInfoApi } from "./api_v2";
+import JsFileDownloader from "js-file-downloader";
 
 function nowYear() {
   let dt = new Date();
@@ -78,9 +79,6 @@ function concopyLine() {
   });
 }
 
-
-
-
 function concoMenu() {
   let tbdEl = document.getElementById("tbd") as HTMLTableSectionElement;
   tbdEl.oncontextmenu = (e) => {
@@ -122,23 +120,56 @@ function concoMenu() {
     let copyMenuEl = document.createElement("div");
 
     copyMenuEl.classList.add("copy-menu");
-    copyMenuEl.innerHTML = `<div class="copy-item"><img id="app-icon" src="${loadinggif}"></div><div id="copy-token" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 appfilter.xml</div><div id="copy-id" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 Id</div>`;
+    copyMenuEl.innerHTML = `<div class="copy-item icon-wrap"><img id="app-icon" src="${loadinggif}"></div><div id="copy-token" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 appfilter.xml</div><div id="copy-id" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 Id</div>`;
     copyMenuEl.setAttribute("targetln", trEl.rowIndex.toString());
     copyMenuEl.style.position = "absolute";
     copyMenuEl.style.left = x + "px";
     copyMenuEl.style.top = y + "px";
-    appIconApi.fetch({query: {
-      appId: packageName
-    }}).then((dt) => {
-      let appIconEl = document.getElementById("app-icon") as HTMLImageElement;
-      if (appIconEl != null) {
-        let img = new Image();
-        img.src = dt.data.image;
-        img.onload = () => {
-          appIconEl.src = img.src;
-        };
-      }
-    });
+    appIconApi
+      .fetch({
+        query: {
+          appId: packageName,
+        },
+      })
+      .then((dt) => {
+        let appIconEl = document.getElementById("app-icon") as HTMLImageElement;
+        if (appIconEl != null) {
+          let img = new Image();
+          img.src = dt.data.image;
+          img.onload = () => {
+            appIconEl.src = img.src;
+            appIconEl.style.cursor = "pointer";
+            appIconEl.onclick = () => {
+              const fileUrl = dt.data.image;
+              new JsFileDownloader({
+                url: fileUrl,
+                nameCallback: () => {
+                  return packageName + ".png";
+                }
+              })
+                .then(function () {
+                  let cpEl = document.createElement("div");
+                  cpEl.classList.add("copy-success");
+                  document.body.insertAdjacentElement("beforebegin", cpEl);
+                  cpEl.innerHTML = `<span><i class="fa-solid fa-circle-check"></i>&nbsp;图标下载成功</span>`;
+                  setTimeout(() => {
+                    cpEl.remove();
+                  }, 4200);
+                })
+                .catch(function (error) {
+                  let cpEl = document.createElement("div");
+                  cpEl.classList.add("copy-fail");
+                  document.body.insertAdjacentElement("beforebegin", cpEl);
+                  cpEl.innerHTML = `<span><i class="fa-solid fa-circle-xmark"></i>&nbsp;图标下载失败</span>`;
+                  setTimeout(() => {
+                    cpEl.remove();
+                  }, 4200);
+                  throw error;
+                });
+            };
+          };
+        }
+      });
 
     document.body.insertAdjacentElement("beforeend", copyMenuEl);
 
@@ -146,7 +177,10 @@ function concoMenu() {
 
     document.onmousedown = (e) => {
       let cpEl = e.target as HTMLElement;
-      if (!cpEl.classList.contains("copy-item")) {
+      if (
+        !cpEl.classList.contains("copy-item") &&
+        cpEl.id != "app-icon"
+      ) {
         copyMenuEl.remove();
       } else {
         setTimeout(() => {
@@ -167,15 +201,31 @@ let rltEl = document.getElementsByClassName("rlt-area")[0] as HTMLDivElement;
 let clseEl = document.getElementsByClassName("clse")[0] as HTMLSpanElement;
 let hiswtEl = document.getElementById("hiswt") as HTMLInputElement;
 
+hiswtEl.addEventListener("click", (e) => {
+  let tbd = document.getElementById("tbd") as HTMLTableSectionElement;
+  if (!tbd) {
+    e.preventDefault();
+  }
+});
 
 hiswtEl.addEventListener("change", (e) => {
-  let el = e.target as HTMLInputElement;
-  let checked = el.checked;
+  let checked = hiswtEl.checked;
   let tbd = document.getElementById("tbd") as HTMLTableSectionElement;
-  if(checked && tbd) {
-  let trs = tbd.children;
-    for(let k in trs) {
-      console.log(trs[k]);
+  if (tbd) {
+    if (checked) {
+      let trs = tbd.children;
+      for (let k = 0; k < trs.length; k++) {
+        if (trs[k].children[0].textContent === "") {
+          trs[k].setAttribute("hidden", "true");
+        }
+      }
+    } else if (!checked) {
+      let trs = tbd.children;
+      for (let k = 0; k < trs.length; k++) {
+        if (trs[k].getAttribute("hidden") === "true") {
+          trs[k].removeAttribute("hidden");
+        }
+      }
     }
   }
 });
@@ -183,7 +233,6 @@ hiswtEl.addEventListener("change", (e) => {
 clseEl.addEventListener("click", () => {
   document.getElementsByTagName("header")[0].hidden = true;
 });
-
 
 yearEl.textContent = nowYear().toString();
 srtpEl?.addEventListener("change", () => {
@@ -214,60 +263,68 @@ formEl.addEventListener("submit", (e) => {
     switch (srtpEl.value) {
       case "1":
         conloadingIcon();
-        appInfoApi.fetch({
-          query: {
-            q: kwEl.value,
-            page: "1",
-            per: "2147483647"
-          }
-        }).then((dt) => {
-          lastKw = kwEl.value;
-          rltEl.innerHTML = conTbTpl(dt.data);
-          concoMenu();
-        });
+        appInfoApi
+          .fetch({
+            query: {
+              q: kwEl.value,
+              page: "1",
+              per: "2147483647",
+            },
+          })
+          .then((dt) => {
+            lastKw = kwEl.value;
+            rltEl.innerHTML = conTbTpl(dt.data);
+            concoMenu();
+          });
         break;
       case "2":
         conloadingIcon();
-        appInfoApi.fetch({
-          query: {
-            regex: kwEl.value,
-            page: "1",
-            per: "2147483647"
-          }
-        }).then((dt) => {
-          lastKw = kwEl.value;
-          rltEl.innerHTML = conTbTpl(dt.data);
-          concoMenu();
-        });
+        appInfoApi
+          .fetch({
+            query: {
+              regex: kwEl.value,
+              page: "1",
+              per: "2147483647",
+            },
+          })
+          .then((dt) => {
+            lastKw = kwEl.value;
+            rltEl.innerHTML = conTbTpl(dt.data);
+            concoMenu();
+          });
         break;
       case "3":
         conloadingIcon();
-        appInfoApi.fetch({
-          query: {
-            page: "1",
-            per: "2147483647"
-          }
-        }).then((dt) => {
-          lastKw = kwEl.value;
-          rltEl.innerHTML = conTbTpl(dt.data);
-          concoMenu();
-        });
+        appInfoApi
+          .fetch({
+            query: {
+              page: "1",
+              per: "2147483647",
+            },
+          })
+          .then((dt) => {
+            lastKw = kwEl.value;
+            rltEl.innerHTML = conTbTpl(dt.data);
+            concoMenu();
+          });
         break;
       case "4":
         conloadingIcon();
-        signatureAppInfoApi.fetch({
-          query: {
-            page: "1",
-            per: "2147483647"
-          },
-          path: {
-            signature: kwEl.value
-          }
-        }).then((dt) => {
-          lastKw = kwEl.value;
-          rltEl.innerHTML = conTbTpl(dt.data);
-          concoMenu();
-        });
+        signatureAppInfoApi
+          .fetch({
+            query: {
+              page: "1",
+              per: "2147483647",
+            },
+            path: {
+              signature: kwEl.value,
+            },
+          })
+          .then((dt) => {
+            lastKw = kwEl.value;
+            rltEl.innerHTML = conTbTpl(dt.data);
+            concoMenu();
+          });
         break;
       default:
         break;

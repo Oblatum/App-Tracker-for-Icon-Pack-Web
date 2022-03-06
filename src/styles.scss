@@ -231,6 +231,7 @@ header {
   display: inline-block;
   width: 80px;
   height: 80px;
+  margin-top: 2rem;
 }
 .lds-dual-ring:after {
   content: " ";
@@ -266,6 +267,10 @@ header {
     padding: 0.25rem 0;
     color: #334155;
     user-select: none;
+
+    > svg {
+      pointer-events: none;
+    }
     
     .fa {
       pointer-events: none;
@@ -274,7 +279,6 @@ header {
     img {
       width: 3rem;
       object-fit: contain;
-      pointer-events: none;
     }
     &:first-child:hover {
       background: unset;
@@ -284,12 +288,34 @@ header {
     }
 
   }
+
+  #app-icon {
+    width: 3rem;
+    height: 3rem;
+    object-fit: contain;
+  }
 }
 
 .copy-success {
   border-bottom: 0.5px solid #67c23a;
   color: #67c23a;
   background-color: #e1f3d8;
+  width: 100%;
+  border-radius: 2px;
+  padding: 0.25rem;
+  text-align: center;
+  font-size: 0.8rem;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  animation: infobarmv 4s forwards;
+  position: absolute;
+  top: -5rem;
+  z-index: 999999;
+}
+
+.copy-fail {
+  border-bottom: 0.5px solid #c23a3a;
+  color: #c23a3a;
+  background-color: #f3e3d8;
   width: 100%;
   border-radius: 2px;
   padding: 0.25rem;
