@@ -188,6 +188,8 @@ function concoMenu() {
   };
 }
 
+
+
 let lastKw = "";
 
 let kwEl = document.getElementById("kw") as HTMLInputElement;
@@ -238,7 +240,7 @@ hiswtEl.addEventListener("click", (e) => {
   }
 });
 
-hiswtEl.addEventListener("change", (e) => {
+function hideBlank() {
   let checked = hiswtEl.checked;
   let tbd = document.getElementById("tbd") as HTMLTableSectionElement;
   if (tbd) {
@@ -258,6 +260,10 @@ hiswtEl.addEventListener("change", (e) => {
       }
     }
   }
+}
+
+hiswtEl.addEventListener("change", (e) => {
+  hideBlank();
 });
 
 clseEl.addEventListener("click", () => {
@@ -305,6 +311,7 @@ formEl.addEventListener("submit", (e) => {
             lastKw = kwEl.value;
             rltEl.innerHTML = conTbTpl(dt.data);
             concoMenu();
+            hideBlank();
           });
         break;
       case "2":
@@ -321,6 +328,7 @@ formEl.addEventListener("submit", (e) => {
             lastKw = kwEl.value;
             rltEl.innerHTML = conTbTpl(dt.data);
             concoMenu();
+            hideBlank();
           });
         break;
       case "3":
@@ -336,6 +344,7 @@ formEl.addEventListener("submit", (e) => {
             lastKw = kwEl.value;
             rltEl.innerHTML = conTbTpl(dt.data);
             concoMenu();
+            hideBlank();
           });
         break;
       case "4":
@@ -354,6 +363,7 @@ formEl.addEventListener("submit", (e) => {
             lastKw = kwEl.value;
             rltEl.innerHTML = conTbTpl(dt.data);
             concoMenu();
+            hideBlank();
           });
         break;
       default:
