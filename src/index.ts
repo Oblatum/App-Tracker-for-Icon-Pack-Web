@@ -144,8 +144,8 @@ function concoMenu() {
               new JsFileDownloader({
                 url: fileUrl,
                 nameCallback: () => {
-                  return packageName + ".png";
-                }
+                  return packageName + ".jpg";
+                },
               })
                 .then(function () {
                   let cpEl = document.createElement("div");
@@ -177,10 +177,7 @@ function concoMenu() {
 
     document.onmousedown = (e) => {
       let cpEl = e.target as HTMLElement;
-      if (
-        !cpEl.classList.contains("copy-item") &&
-        cpEl.id != "app-icon"
-      ) {
+      if (!cpEl.classList.contains("copy-item") && cpEl.id != "app-icon") {
         copyMenuEl.remove();
       } else {
         setTimeout(() => {
@@ -200,6 +197,33 @@ let formEl = document.getElementById("form") as HTMLFormElement;
 let rltEl = document.getElementsByClassName("rlt-area")[0] as HTMLDivElement;
 let clseEl = document.getElementsByClassName("clse")[0] as HTMLSpanElement;
 let hiswtEl = document.getElementById("hiswt") as HTMLInputElement;
+let collaEls = document.getElementsByClassName("colla-title");
+let tipsEl = document.getElementsByClassName("tips-wrap")[0] as HTMLDivElement;
+let tipsSwEl = document.getElementsByClassName(
+  "colla-colla"
+)[0] as HTMLDivElement;
+
+tipsSwEl.onclick = () => {
+  tipsSwEl.classList.toggle("ro");
+  tipsEl.classList.toggle("show");
+};
+for (let k = 0; k < collaEls.length; k++) {
+  collaEls[k].addEventListener("click", (e) => {
+    let index = k;
+    for (let k = 0; k < collaEls.length; k++) {
+      if (k != index) {
+        let nItem = collaEls[k].nextElementSibling as HTMLDivElement;
+        if (!nItem.classList.contains("collapse")) {
+          nItem.classList.add("collapse");
+        }
+      }
+    }
+    let tt = e.target as HTMLDivElement;
+    let nItem = tt.nextElementSibling as HTMLDivElement;
+    nItem.classList.toggle("collapse");
+    tt.classList.toggle("ro");
+  });
+}
 
 hiswtEl.addEventListener("click", (e) => {
   let tbd = document.getElementById("tbd") as HTMLTableSectionElement;

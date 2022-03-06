@@ -9,7 +9,8 @@
   <body>
     <header>
       <p>
-        两分钟时间，下载 Android 客户端帮助我们丰富数据库&nbsp;<a href="https://github.com/Oblatum/App-Tracker-for-Icon-Pack-Client-Side-Android-Version/releases/latest"
+        两分钟时间，下载 Android 客户端帮助我们丰富数据库&nbsp;<a
+          href="https://github.com/Oblatum/App-Tracker-for-Icon-Pack-Client-Side-Android-Version/releases/latest"
           >Github&nbsp;<i class="fa fa-angle-right"></i
         ></a>
         <a href="http://www.coolapk.com/apk/ren.imyan.app_tracker"
@@ -41,13 +42,11 @@
             </select>
             <button id="smt" type="submit"><i class="fa fa-search"></i></button>
           </form>
-          <input type="checkbox" name="" id="hiswt">
+          <input type="checkbox" name="" id="hiswt" />
         </div>
       </div>
 
       <div class="rlt-area"></div>
-
-
 
       <footer>
         <p class="ft-text">
@@ -58,6 +57,92 @@
           >
         </p>
       </footer>
+    </div>
+    <div class="tips-wrap">
+      <div class="colla-colla">
+        <i class="fa fa-angle-right"></i>
+      </div>
+      <div class="colla-panel">
+        <div class="colla-heading">搜索提示</div>
+        <div class="colla-divide"></div>
+        <div class="colla-title">普通搜索</div>
+        <div class="colla-item collapse">
+          <ul>
+            <li>
+              <p>A 空格 B 表示既包含 A 也包含 B。</p>
+              <blockquote>
+                <p>搜索：<em>腾讯 管家</em></p>
+                <p>搜索结果：<em>腾讯手机管家 腾讯相册管家</em></p>
+              </blockquote>
+            </li>
+            <li>
+              <p>使用 | 表示要么包含 A 要么包含 B。</p>
+              <blockquote>
+                <p>搜索：<em>腾讯|管家</em></p>
+                <p>
+                  搜索结果：<em>手机管家 腾讯动漫 腾讯地图 网易账号管家...</em>
+                </p>
+              </blockquote>
+            </li>
+            <li>
+              <p>空格和 | 可以多次使用，但不支持嵌套。</p>
+              <blockquote>
+                <p>搜索：<em>腾讯 管家|网易 管家|平安 管家</em></p>
+                <p>
+                  搜索结果：<em
+                    >腾讯手机管家 腾讯相册管家 网易账号管家 平安金管家</em
+                  >
+                </p>
+              </blockquote>
+            </li>
+          </ul>
+        </div>
+        <div class="colla-divide"></div>
+        <div class="colla-title">正则搜索</div>
+        <div class="colla-item collapse">
+          <p>
+            正则搜索支持使用正则表达式进行搜索，搜索范围为应用名、包名、启动项名，大小写不敏感，默认单行模式。
+          </p>
+          <p>
+            ⚠️注意，由于数据量较大，正则表达式较为复杂，搜索时间可能长达数秒，请耐心等待，不要多次提交搜索。
+          </p>
+          <p>为了帮助不熟悉正则表达式的用户，下面列出一些常用的正则表达式。</p>
+          <ul>
+            <li>
+              <p><em>^腾讯</em>：搜索开头为 <em>腾讯</em> 的所有项目。</p>
+            </li>
+            <li>
+              <p><em>音乐$</em>：搜索结尾为 <em>音乐</em> 的所有项目。</p>
+            </li>
+            <li>
+              <p>
+                <em>^QQ音乐$</em>：搜索全名为 <em>QQ音乐</em> 的项目，不多不少。
+              </p>
+            </li>
+            <li>
+              <p>
+                <em>^小米(?!路由器)(?!运动)</em>： 搜索开头为
+                <em>小米</em>，且之后不出现 <em>路由器</em> 或
+                <em>运动</em> 的所有项目。
+              </p>
+            </li>
+            <li>
+              <p>
+                <em>^com\.tencent.*SplashActivity$</em>：搜索开头为
+                <em>com.tencent</em> ，中间为任意内容，结尾为
+                <em>SplashActivity</em> 的所有项目。
+              </p>
+            </li>
+            <li>
+              <p>
+                <em>腾讯\p{Han}{2}\b</em
+                >：腾讯后必须是两个汉字，然后是一个分隔符（例如空格或者半角符号）。
+              </p>
+            </li>
+          </ul>
+        </div>
+        <div class="colla-divide"></div>
+      </div>
     </div>
   </body>
 </html>
