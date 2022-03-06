@@ -207,6 +207,12 @@ tipsSwEl.onclick = () => {
   tipsSwEl.classList.toggle("ro");
   tipsEl.classList.toggle("show");
 };
+
+if(localStorage.getItem("tips") == null) {
+  tipsSwEl.click()
+  localStorage.setItem("tips", "true");
+}
+
 for (let k = 0; k < collaEls.length; k++) {
   collaEls[k].addEventListener("click", (e) => {
     let index = k;
