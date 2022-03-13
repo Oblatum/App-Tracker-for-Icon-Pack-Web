@@ -34,10 +34,10 @@ function conloadingIcon() {
 }
 
 function concopyLine() {
-  let copyTokenEl = document.getElementById("copy-token");
+  let copyFilterEl = document.getElementById("copy-filter");
   let copyIdEl = document.getElementById("copy-id");
   let copyPkgEl = document.getElementById("copy-pkg");
-  copyTokenEl?.addEventListener("click", (e) => {
+  copyFilterEl?.addEventListener("click", (e) => {
     let coim = e.target as HTMLDivElement;
     let comn = coim.parentElement as HTMLDivElement;
     let rowindex = comn.getAttribute("targetln") as string;
@@ -141,7 +141,7 @@ function concoMenu() {
     let copyMenuEl = document.createElement("div");
 
     copyMenuEl.classList.add("copy-menu");
-    copyMenuEl.innerHTML = `<div class="copy-item icon-wrap"><img id="app-icon" src="${loadinggif}"></div><div id="copy-token" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 appfilter.xml</div><div id="copy-id" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 Id</div><div id="copy-pkg" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制包名</div>`;
+    copyMenuEl.innerHTML = `<div class="copy-item icon-wrap"><img id="app-icon" src="${loadinggif}"></div><div id="copy-filter" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 appfilter.xml</div><div id="copy-id" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 Id</div><div id="copy-pkg" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制包名</div>`;
     copyMenuEl.setAttribute("targetln", trEl.rowIndex.toString());
     copyMenuEl.style.position = "absolute";
     copyMenuEl.style.left = x + "px";
