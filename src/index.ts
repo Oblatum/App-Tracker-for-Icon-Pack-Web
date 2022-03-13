@@ -36,6 +36,7 @@ function conloadingIcon() {
 function concopyLine() {
   let copyTokenEl = document.getElementById("copy-token");
   let copyIdEl = document.getElementById("copy-id");
+  let copyPkgEl = document.getElementById("copy-pkg");
   copyTokenEl?.addEventListener("click", (e) => {
     let coim = e.target as HTMLDivElement;
     let comn = coim.parentElement as HTMLDivElement;
@@ -77,6 +78,26 @@ function concopyLine() {
       }, 4200);
     });
   });
+
+  copyPkgEl?.addEventListener("click", (e) => {
+    let coim = e.target as HTMLDivElement;
+    let comn = coim.parentElement as HTMLDivElement;
+    let rowindex = comn.getAttribute("targetln") as string;
+    let tbd = document.getElementById("tbd") as HTMLTableSectionElement;
+    let el = tbd.children[parseInt(rowindex) - 1];
+    let packageName = el.children[1].textContent;
+    let copyTpl = packageName;
+    let p = navigator.clipboard.writeText(copyTpl as string);
+    p.then(() => {
+      let cpEl = document.createElement("div");
+      cpEl.classList.add("copy-success");
+      document.body.insertAdjacentElement("beforebegin", cpEl);
+      cpEl.innerHTML = `<span><i class="fa-solid fa-circle-check"></i>&nbsp;复制包名成功</span>`;
+      setTimeout(() => {
+        cpEl.remove();
+      }, 4200);
+    });
+  });
 }
 
 function concoMenu() {
@@ -100,7 +121,7 @@ function concoMenu() {
     let clientW = docEl.clientWidth;
     let clientH = docEl.clientHeight;
     let cox = 10 * rem;
-    let coy = 8 * rem;
+    let coy = 10 * rem;
 
     if (clientW - x - cox < 0) {
       x -= cox;
@@ -120,7 +141,7 @@ function concoMenu() {
     let copyMenuEl = document.createElement("div");
 
     copyMenuEl.classList.add("copy-menu");
-    copyMenuEl.innerHTML = `<div class="copy-item icon-wrap"><img id="app-icon" src="${loadinggif}"></div><div id="copy-token" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 appfilter.xml</div><div id="copy-id" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 Id</div>`;
+    copyMenuEl.innerHTML = `<div class="copy-item icon-wrap"><img id="app-icon" src="${loadinggif}"></div><div id="copy-token" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 appfilter.xml</div><div id="copy-id" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 Id</div><div id="copy-pkg" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制包名</div>`;
     copyMenuEl.setAttribute("targetln", trEl.rowIndex.toString());
     copyMenuEl.style.position = "absolute";
     copyMenuEl.style.left = x + "px";
