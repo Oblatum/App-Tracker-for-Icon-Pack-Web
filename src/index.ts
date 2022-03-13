@@ -239,15 +239,16 @@ if(localStorage.getItem("tips") == null) {
 for (let k = 0; k < collaEls.length; k++) {
   collaEls[k].addEventListener("click", (e) => {
     let index = k;
+    let tt = e.target as HTMLDivElement;
     for (let k = 0; k < collaEls.length; k++) {
       if (k != index) {
         let nItem = collaEls[k].nextElementSibling as HTMLDivElement;
         if (!nItem.classList.contains("collapse")) {
           nItem.classList.add("collapse");
+          collaEls[k].classList.remove("ro");
         }
       }
     }
-    let tt = e.target as HTMLDivElement;
     let nItem = tt.nextElementSibling as HTMLDivElement;
     nItem.classList.toggle("collapse");
     tt.classList.toggle("ro");
