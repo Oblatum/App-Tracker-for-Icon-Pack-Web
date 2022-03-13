@@ -150,15 +150,34 @@ header {
 }
 
 #hiswt {
-  width: 1rem;
-  height: 1rem;
   margin: 0;
   position: relative;
   top: 50%;
-  left: 1rem;
-  transform: translateY(50%);
-  // display: none;
+  left: 0.5rem;
+  transform: translateY(-50%);
+  vertical-align: middle;
+
+  color: #334155;
+  font-size: 1.5rem;
+  outline: none;
+  -webkit-appearance: none;
+  
+  &::after {
+    position: absolute;
+    font-family: FontAwesome;
+  vertical-align: middle;
+
+    line-height: 2rem;
+    content: '\f06e';
+    cursor: pointer;
+  }
+
+  &:checked:after {
+    content: '\f070';
+  }
 }
+
+
 
 .last-rlt {
   display: flex;
@@ -169,6 +188,7 @@ header {
   display: flex;
   justify-content: center;
   position: relative;
+  height: 2rem;
 }
 
 .rlt-area {
