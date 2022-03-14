@@ -156,7 +156,6 @@ header {
   left: 0.5rem;
   transform: translateY(-50%);
   vertical-align: middle;
-
   color: #334155;
   font-size: 1.5rem;
   outline: none;
@@ -232,13 +231,21 @@ header {
   td {
     word-break: break-all;
     padding: 0.9rem 0.25rem;
-    border-bottom: 1px solid rgb(240, 240, 240);
     font-size: 0.9rem;
     // user-select: none;
   }
 
   tr:last-of-type td {
     border: 0;
+  }
+
+  tr {
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+
+    &.noline {
+      border: 0 !important;
+    }
   }
 }
 

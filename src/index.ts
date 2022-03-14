@@ -25,7 +25,6 @@ function conTbTpl(data: SearchAPIResData.ResRootObject) {
     "yrDlxhnzwWwd&^4=0f5/ltQl8555rbqclazz",
     seasoning
   );
-
   return ripeTableHtml;
 }
 
@@ -104,10 +103,8 @@ function concoMenu() {
   let tbdEl = document.getElementById("tbd") as HTMLTableSectionElement;
   tbdEl.oncontextmenu = (e) => {
     e.preventDefault();
-
     let tdEl = e.target as HTMLTableCellElement;
     let trEl = tdEl.parentElement as HTMLTableRowElement;
-
     const docEl = document.documentElement;
     let docTop = getComputedStyle(docEl).top,
       offsetY = parseInt(docTop);
@@ -116,13 +113,11 @@ function concoMenu() {
     }
     let x = e.pageX;
     let y = e.pageY - offsetY;
-
     let rem = parseInt(getComputedStyle(document.documentElement).fontSize);
     let clientW = docEl.clientWidth;
     let clientH = docEl.clientHeight;
     let cox = 10 * rem;
     let coy = 10 * rem;
-
     if (clientW - x - cox < 0) {
       x -= cox;
       if (clientH - y - coy < 0) {
@@ -136,10 +131,8 @@ function concoMenu() {
         }
       }
     }
-
     let packageName = trEl.children[1].textContent as string;
-    let copyMenuEl = document.createElement("div");
-
+    let copyMenuEl = document.getElementsByClassName("copy-menu")[0] as HTMLDivElement || document.createElement("div");
     copyMenuEl.classList.add("copy-menu");
     copyMenuEl.innerHTML = `<div class="copy-item icon-wrap"><img id="app-icon" src="${loadinggif}"></div><div id="copy-filter" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 appfilter.xml</div><div id="copy-id" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 Id</div><div id="copy-pkg" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制包名</div>`;
     copyMenuEl.setAttribute("targetln", trEl.rowIndex.toString());
@@ -191,11 +184,8 @@ function concoMenu() {
           };
         }
       });
-
     document.body.insertAdjacentElement("beforeend", copyMenuEl);
-
     concopyLine();
-
     document.onmousedown = (e) => {
       let cpEl = e.target as HTMLElement;
       if (!cpEl.classList.contains("copy-item") && cpEl.id != "app-icon") {
@@ -209,10 +199,7 @@ function concoMenu() {
   };
 }
 
-
-
 let lastKw = "";
-
 let kwEl = document.getElementById("kw") as HTMLInputElement;
 let yearEl = document.getElementById("year") as HTMLSpanElement;
 let srtpEl = document.getElementById("srtp") as HTMLSelectElement;
@@ -231,8 +218,8 @@ tipsSwEl.onclick = () => {
   tipsEl.classList.toggle("show");
 };
 
-if(localStorage.getItem("tips") == null) {
-  tipsSwEl.click()
+if (localStorage.getItem("tips") == null) {
+  tipsSwEl.click();
   localStorage.setItem("tips", "true");
 }
 
@@ -253,7 +240,7 @@ for (let k = 0; k < collaEls.length; k++) {
     nItem.classList.toggle("collapse");
     tt.classList.toggle("ro");
   });
-}
+};
 
 hiswtEl.addEventListener("click", (e) => {
   let tbd = document.getElementById("tbd") as HTMLTableSectionElement;
@@ -315,6 +302,7 @@ srtpEl?.addEventListener("change", () => {
       break;
   }
 });
+
 formEl.addEventListener("submit", (e) => {
   e.preventDefault();
   if (typeof kwEl.value != "undefined") {
