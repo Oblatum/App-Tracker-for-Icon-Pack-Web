@@ -1,23 +1,22 @@
-declare module SearchAPIResData {
-  export interface ResItem {
-    count: number;
-    appName: string;
-    activityName: string;
-    packageName: string;
-    signature: string;
-    id: string;
-  }
-  export interface ResMetadata {
-    total: number;
-  }
-  export interface ResRootObject {
-    items: ResItem[];
-    metadata: ResMetadata;
-  }
-
-  export interface IconRootObject {
-    image: string;
-    name: string;
-    url: string;
+interface ResItem {
+  count: number;
+  appName: string;
+  activityName: string;
+  packageName: string;
+  signature: string;
+  id: string;
 }
+interface ResMetadata {
+  total: number;
+  page: number;
+  per: number;
+}
+export interface appInfoJSON {
+  items: ResItem[];
+  metadata: ResMetadata;
+}
+export interface IconJSON {
+  image: string;
+  name: string;
+  url: string;
 }

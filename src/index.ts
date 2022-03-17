@@ -1,383 +1,523 @@
-import "./styles.scss";
+import "./style.scss";
 import "./favicon.png";
-import loadinggif from "./loading.gif";
-import "@fortawesome/fontawesome-free/js/all.js";
-import { appIconApi, appInfoApi, signatureAppInfoApi } from "./api_v2";
-import JsFileDownloader from "js-file-downloader";
-
-function nowYear() {
-  let dt = new Date();
-  return dt.getFullYear();
-}
-
-function conTbTpl(data: SearchAPIResData.ResRootObject) {
-  const template = `<p class="last-rlt">搜索结果: ${lastKw}</p><div class="rlt-tb"><table class="tb"><thead><tr><th>应用名</th><th>包名</th><th>启动项</th></tr></thead><tbody id="tbd">yrDlxhnzwWwd&^4=0f5/ltQl8555rbqclazz</tbody></table></div></div>`;
-  let seasoning = "";
-  let ripeTableHtml;
-  data.items.forEach((v) => {
-    seasoning += "<tr>";
-    seasoning += `<td appid="${v.id}">${v.appName}</td>`;
-    seasoning += `<td>${v.packageName}</td>`;
-    seasoning += `<td>${v.activityName}</td>`;
-    seasoning += "</tr>";
-  });
-  ripeTableHtml = template.replace(
-    "yrDlxhnzwWwd&^4=0f5/ltQl8555rbqclazz",
-    seasoning
-  );
-  return ripeTableHtml;
-}
-
-function conloadingIcon() {
-  rltEl.innerHTML = '<div class="lds-dual-ring"></div>';
-}
-
-function concopyLine() {
-  let copyFilterEl = document.getElementById("copy-filter");
-  let copyIdEl = document.getElementById("copy-id");
-  let copyPkgEl = document.getElementById("copy-pkg");
-  copyFilterEl?.addEventListener("click", (e) => {
-    let coim = e.target as HTMLDivElement;
-    let comn = coim.parentElement as HTMLDivElement;
-    let rowindex = comn.getAttribute("targetln") as string;
-    let tbd = document.getElementById("tbd") as HTMLTableSectionElement;
-    let el = tbd.children[parseInt(rowindex) - 1];
-    let appName = el.children[0].textContent,
-      packageName = el.children[1].textContent,
-      activityName = el.children[2].textContent;
-    let copyTpl = `<item component="ComponentInfo{${packageName}/${activityName}}" drawable="${appName}" />`;
-    let p = navigator.clipboard.writeText(copyTpl);
-    p.then(() => {
-      let cpEl = document.createElement("div");
-      cpEl.classList.add("copy-success");
-      document.body.insertAdjacentElement("beforebegin", cpEl);
-      cpEl.innerHTML = `<span><i class="fa-solid fa-circle-check"></i>&nbsp;复制 appfilter.xml 成功</span>`;
-      setTimeout(() => {
-        cpEl.remove();
-      }, 4200);
-    });
-  });
-
-  copyIdEl?.addEventListener("click", (e) => {
-    let coim = e.target as HTMLDivElement;
-    let comn = coim.parentElement as HTMLDivElement;
-    let rowindex = comn.getAttribute("targetln") as string;
-    let tbd = document.getElementById("tbd") as HTMLTableSectionElement;
-    let el = tbd.children[parseInt(rowindex) - 1];
-    let id = el.children[0].getAttribute("appid");
-    let copyTpl = id;
-    let p = navigator.clipboard.writeText(copyTpl as string);
-    p.then(() => {
-      let cpEl = document.createElement("div");
-      cpEl.classList.add("copy-success");
-      document.body.insertAdjacentElement("beforebegin", cpEl);
-      cpEl.innerHTML = `<span><i class="fa-solid fa-circle-check"></i>&nbsp;复制 ID 成功</span>`;
-      setTimeout(() => {
-        cpEl.remove();
-      }, 4200);
-    });
-  });
-
-  copyPkgEl?.addEventListener("click", (e) => {
-    let coim = e.target as HTMLDivElement;
-    let comn = coim.parentElement as HTMLDivElement;
-    let rowindex = comn.getAttribute("targetln") as string;
-    let tbd = document.getElementById("tbd") as HTMLTableSectionElement;
-    let el = tbd.children[parseInt(rowindex) - 1];
-    let packageName = el.children[1].textContent;
-    let copyTpl = packageName;
-    let p = navigator.clipboard.writeText(copyTpl as string);
-    p.then(() => {
-      let cpEl = document.createElement("div");
-      cpEl.classList.add("copy-success");
-      document.body.insertAdjacentElement("beforebegin", cpEl);
-      cpEl.innerHTML = `<span><i class="fa-solid fa-circle-check"></i>&nbsp;复制包名成功</span>`;
-      setTimeout(() => {
-        cpEl.remove();
-      }, 4200);
-    });
-  });
-}
-
-function concoMenu() {
-  let tbdEl = document.getElementById("tbd") as HTMLTableSectionElement;
-  tbdEl.oncontextmenu = (e) => {
-    e.preventDefault();
-    let tdEl = e.target as HTMLTableCellElement;
-    let trEl = tdEl.parentElement as HTMLTableRowElement;
-    const docEl = document.documentElement;
-    let docTop = getComputedStyle(docEl).top,
-      offsetY = parseInt(docTop);
-    if (isNaN(offsetY)) {
-      offsetY = 0;
-    }
-    let x = e.pageX;
-    let y = e.pageY - offsetY;
-    let rem = parseInt(getComputedStyle(document.documentElement).fontSize);
-    let clientW = docEl.clientWidth;
-    let clientH = docEl.clientHeight;
-    let cox = 10 * rem;
-    let coy = 10 * rem;
-    if (clientW - x - cox < 0) {
-      x -= cox;
-      if (clientH - y - coy < 0) {
-        y -= coy;
-      }
-    } else {
-      if (clientH - y - coy < 0) {
-        y -= coy;
-        if (clientW - x - cox < 0) {
-          x -= cox;
-        }
-      }
-    }
-    let packageName = trEl.children[1].textContent as string;
-    let copyMenuEl = document.getElementsByClassName("copy-menu")[0] as HTMLDivElement || document.createElement("div");
-    copyMenuEl.classList.add("copy-menu");
-    copyMenuEl.innerHTML = `<div class="copy-item icon-wrap"><img id="app-icon" src="${loadinggif}"></div><div id="copy-filter" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 appfilter.xml</div><div id="copy-id" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制 Id</div><div id="copy-pkg" class="copy-item"><i class="fa fa-copy"></i>&nbsp;复制包名</div>`;
-    copyMenuEl.setAttribute("targetln", trEl.rowIndex.toString());
-    copyMenuEl.style.position = "absolute";
-    copyMenuEl.style.left = x + "px";
-    copyMenuEl.style.top = y + "px";
-    appIconApi
-      .fetch({
-        query: {
-          appId: packageName,
-        },
-      })
-      .then((dt) => {
-        let appIconEl = document.getElementById("app-icon") as HTMLImageElement;
-        if (appIconEl != null) {
-          let img = new Image();
-          img.src = dt.data.image;
-          img.onload = () => {
-            appIconEl.src = img.src;
-            appIconEl.style.cursor = "pointer";
-            appIconEl.onclick = () => {
-              const fileUrl = dt.data.image;
-              new JsFileDownloader({
-                url: fileUrl,
-                nameCallback: () => {
-                  return packageName + ".jpg";
-                },
-              })
-                .then(function () {
-                  let cpEl = document.createElement("div");
-                  cpEl.classList.add("copy-success");
-                  document.body.insertAdjacentElement("beforebegin", cpEl);
-                  cpEl.innerHTML = `<span><i class="fa-solid fa-circle-check"></i>&nbsp;图标下载成功</span>`;
-                  setTimeout(() => {
-                    cpEl.remove();
-                  }, 4200);
-                })
-                .catch(function (error) {
-                  let cpEl = document.createElement("div");
-                  cpEl.classList.add("copy-fail");
-                  document.body.insertAdjacentElement("beforebegin", cpEl);
-                  cpEl.innerHTML = `<span><i class="fa-solid fa-circle-xmark"></i>&nbsp;图标下载失败</span>`;
-                  setTimeout(() => {
-                    cpEl.remove();
-                  }, 4200);
-                  throw error;
-                });
-            };
-          };
-        }
-      });
-    document.body.insertAdjacentElement("beforeend", copyMenuEl);
-    concopyLine();
-    document.onmousedown = (e) => {
-      let cpEl = e.target as HTMLElement;
-      if (!cpEl.classList.contains("copy-item") && cpEl.id != "app-icon") {
-        copyMenuEl.remove();
-      } else {
-        setTimeout(() => {
-          copyMenuEl.remove();
-        }, 1000);
-      }
-    };
-  };
-}
-
-let lastKw = "";
-let kwEl = document.getElementById("kw") as HTMLInputElement;
-let yearEl = document.getElementById("year") as HTMLSpanElement;
-let srtpEl = document.getElementById("srtp") as HTMLSelectElement;
+import "@fortawesome/fontawesome-free/css/all.css";
+import {
+  appIconApi,
+  appInfoApi,
+  getallApi,
+  regexApi,
+  signatureAppInfoApi,
+} from "./api";
+import { appInfoJSON, IconJSON } from "./types";
+let yearEl = document.getElementById("year") as HTMLElement;
+let xqEls = document.getElementsByClassName("xq") as HTMLCollection;
 let formEl = document.getElementById("form") as HTMLFormElement;
-let rltEl = document.getElementsByClassName("rlt-area")[0] as HTMLDivElement;
-let clseEl = document.getElementsByClassName("clse")[0] as HTMLSpanElement;
-let hiswtEl = document.getElementById("hiswt") as HTMLInputElement;
-let collaEls = document.getElementsByClassName("colla-title");
-let tipsEl = document.getElementsByClassName("tips-wrap")[0] as HTMLDivElement;
-let tipsSwEl = document.getElementsByClassName(
-  "colla-colla"
-)[0] as HTMLDivElement;
+let keywordEl = document.getElementById("keyword") as HTMLInputElement;
+let searchTypeEl = document.getElementById("search-type") as HTMLSelectElement;
+let resultAreaEl = document.getElementsByClassName(
+  "result-area"
+)[0] as HTMLElement;
+let hideNilEl = document.getElementById("hide-nil") as HTMLElement;
+let searchTypeAttrs = [
+  {
+    placeholder: "关键词……",
+    disabled: false,
+    api: appInfoApi,
+  },
+  {
+    placeholder: "正则表达式……",
+    disabled: false,
+    api: regexApi,
+  },
+  {
+    placeholder: "打咩打咩！❌",
+    disabled: true,
+    api: getallApi,
+  },
+  {
+    placeholder: "Signature...",
+    disabled: false,
+    api: signatureAppInfoApi,
+  },
+];
 
-tipsSwEl.onclick = () => {
-  tipsSwEl.classList.toggle("ro");
-  tipsEl.classList.toggle("show");
-};
+// 自定义事件：DOM 更新
+const domUpdateEvent = new CustomEvent("domupdate");
+document.addEventListener("domupdate", async () => {
+  console.log("Dom 已更新");
+  conConMenu();
+  setSelectItem();
+  if (hideNilEl.classList.contains("on")) {
+    filterNil();
+    localStorage.setItem("hideNil", "true");
+  } else {
+    filterNil(false);
+    localStorage.removeItem("hideNil");
+  }
+});
 
-if (localStorage.getItem("tips") == null) {
-  tipsSwEl.click();
-  localStorage.setItem("tips", "true");
+// 立即执行
+// 当前年份
+yearEl.textContent = new Date().getFullYear().toString();
+
+// 复原开关状态
+if (localStorage.getItem("hideNil")) {
+  hideNilEl.classList.add("on");
 }
 
-for (let k = 0; k < collaEls.length; k++) {
-  collaEls[k].addEventListener("click", (e) => {
-    let index = k;
-    let tt = e.target as HTMLDivElement;
-    for (let k = 0; k < collaEls.length; k++) {
-      if (k != index) {
-        let nItem = collaEls[k].nextElementSibling as HTMLDivElement;
-        if (!nItem.classList.contains("collapse")) {
-          nItem.classList.add("collapse");
-          collaEls[k].classList.remove("ro");
-        }
-      }
-    }
-    let nItem = tt.nextElementSibling as HTMLDivElement;
-    nItem.classList.toggle("collapse");
-    tt.classList.toggle("ro");
+/**
+ * 监听
+ * **/
+
+// 注册隐藏空白开关
+hideNilEl.addEventListener("click", (ev) => {
+  let el = ev.currentTarget as HTMLElement;
+  el.classList.toggle("on");
+  document.dispatchEvent(domUpdateEvent);
+});
+
+// 注册关闭按钮
+for (let index = 0; index < xqEls.length; index++) {
+  xqEls[index].addEventListener("click", (ev) => {
+    const xqEl = ev.currentTarget as HTMLElement;
+    const xqTargetEl = xqEl.parentNode as HTMLElement;
+    xqTargetEl.remove();
   });
-};
-
-hiswtEl.addEventListener("click", (e) => {
-  let tbd = document.getElementById("tbd") as HTMLTableSectionElement;
-  if (!tbd) {
-    e.preventDefault();
-  }
-});
-
-function hideBlank() {
-  let checked = hiswtEl.checked;
-  let tbd = document.getElementById("tbd") as HTMLTableSectionElement;
-  if (tbd) {
-    if (checked) {
-      let trs = tbd.children;
-      for (let k = 0; k < trs.length; k++) {
-        if (trs[k].children[0].textContent === "") {
-          trs[k].setAttribute("hidden", "true");
-        }
-      }
-    } else if (!checked) {
-      let trs = tbd.children;
-      for (let k = 0; k < trs.length; k++) {
-        if (trs[k].getAttribute("hidden") === "true") {
-          trs[k].removeAttribute("hidden");
-        }
-      }
-    }
-  }
 }
 
-hiswtEl.addEventListener("change", (e) => {
-  hideBlank();
-});
+// 表单提交
 
-clseEl.addEventListener("click", () => {
-  document.getElementsByTagName("header")[0].hidden = true;
-});
-
-yearEl.textContent = nowYear().toString();
-srtpEl?.addEventListener("change", () => {
-  switch (srtpEl.value) {
-    case "1":
-      kwEl.disabled = false;
-      kwEl.placeholder = "关键词……";
+formEl.addEventListener("submit", (ev) => {
+  ev.preventDefault();
+  let typeIndex = +searchTypeEl.value;
+  let api = searchTypeAttrs[typeIndex].api;
+  switch (typeIndex) {
+    case 0:
+      setLoadingAn().then(() => {
+        api
+          .request({
+            query: {
+              q: keywordEl.value.trim(),
+            },
+          })
+          .then((response) => {
+            return response.json();
+          })
+          .then((json) => {
+            conTable(json, "搜索").then((tb) => {
+              resultAreaEl.innerHTML = tb;
+              document.dispatchEvent(domUpdateEvent);
+            });
+          });
+      });
       break;
-    case "2":
-      kwEl.disabled = false;
-      kwEl.placeholder = "正则表达式……";
+    case 1:
+      setLoadingAn().then(() => {
+        api
+          .request({
+            query: {
+              regex: keywordEl.value.trim(),
+            },
+          })
+          .then((response) => {
+            return response.json();
+          })
+          .then((json) => {
+            conTable(json, "正则").then((tb) => {
+              resultAreaEl.innerHTML = tb;
+              document.dispatchEvent(domUpdateEvent);
+            });
+          });
+      });
       break;
-    case "3":
-      kwEl.disabled = true;
-      kwEl.placeholder = "打咩打咩！❌";
+    case 2:
+      setLoadingAn().then(() => {
+        api
+          .request({})
+          .then((response) => {
+            return response.json();
+          })
+          .then((json) => {
+            conTable(json, "浏览").then((tb) => {
+              resultAreaEl.innerHTML = tb;
+              document.dispatchEvent(domUpdateEvent);
+            });
+          });
+      });
       break;
-    case "4":
-      kwEl.disabled = false;
-      kwEl.placeholder = "Signature...";
+    case 3:
+      setLoadingAn().then(() => {
+        api
+          .request({
+            path: {
+              signature: keywordEl.value.trim(),
+            },
+          })
+          .then((response) => {
+            return response.json();
+          })
+          .then((json) => {
+            conTable(json, "来源").then((tb) => {
+              resultAreaEl.innerHTML = tb;
+              document.dispatchEvent(domUpdateEvent);
+            });
+          });
+      });
       break;
     default:
       break;
   }
 });
 
-formEl.addEventListener("submit", (e) => {
-  e.preventDefault();
-  if (typeof kwEl.value != "undefined") {
-    switch (srtpEl.value) {
-      case "1":
-        conloadingIcon();
-        appInfoApi
-          .fetch({
-            query: {
-              q: kwEl.value,
-              page: "1",
-              per: "2147483647",
-            },
-          })
-          .then((dt) => {
-            lastKw = kwEl.value;
-            rltEl.innerHTML = conTbTpl(dt.data);
-            concoMenu();
-            hideBlank();
-          });
-        break;
-      case "2":
-        conloadingIcon();
-        appInfoApi
-          .fetch({
-            query: {
-              regex: kwEl.value,
-              page: "1",
-              per: "2147483647",
-            },
-          })
-          .then((dt) => {
-            lastKw = kwEl.value;
-            rltEl.innerHTML = conTbTpl(dt.data);
-            concoMenu();
-            hideBlank();
-          });
-        break;
-      case "3":
-        conloadingIcon();
-        appInfoApi
-          .fetch({
-            query: {
-              page: "1",
-              per: "2147483647",
-            },
-          })
-          .then((dt) => {
-            lastKw = kwEl.value;
-            rltEl.innerHTML = conTbTpl(dt.data);
-            concoMenu();
-            hideBlank();
-          });
-        break;
-      case "4":
-        conloadingIcon();
-        signatureAppInfoApi
-          .fetch({
-            query: {
-              page: "1",
-              per: "2147483647",
-            },
-            path: {
-              signature: kwEl.value,
-            },
-          })
-          .then((dt) => {
-            lastKw = kwEl.value;
-            rltEl.innerHTML = conTbTpl(dt.data);
-            concoMenu();
-            hideBlank();
-          });
-        break;
-      default:
-        break;
+// 注册切换搜索类型
+searchTypeEl.addEventListener("change", (ev) => {
+  let selectEl = ev.currentTarget as HTMLSelectElement;
+  let type = +selectEl.value;
+  keywordEl.placeholder = searchTypeAttrs[type].placeholder;
+  keywordEl.style.textDecorationLine =
+    searchTypeAttrs[type].disabled && keywordEl.value ? "line-through" : "none";
+  keywordEl.disabled = searchTypeAttrs[type].disabled;
+});
+
+// 选择文本
+function selectText(el: HTMLElement) {
+  window.getSelection()?.removeAllRanges();
+  let selection = getSelection();
+  let range = document.createRange();
+  let selectedContent: string;
+  range.selectNodeContents(el);
+  selection?.addRange(range);
+  selectedContent = selection?.toString() as string;
+  return selectedContent;
+}
+
+// 复制操作
+async function copyText(text: string) {
+  let clipboard = navigator.clipboard;
+  if (clipboard === undefined) {
+    return new Promise(() => {
+      let input = document.createElement("input");
+      document.body.appendChild(input);
+      input.value = text.trim();
+      input.style.visibility = "hidden";
+      input.select();
+      document.execCommand("copy");
+      input.remove();
+    });
+  }
+  return await clipboard.writeText(text.trim());
+}
+
+// contextmenu 失焦
+document.addEventListener("mousedown", (ev) => {
+  let cev = ev as MouseEvent;
+  let contextMenuEl = document.getElementById("td-context-menu") as HTMLElement;
+  const path = ev.composedPath();
+  if (contextMenuEl) {
+    if (!path.includes(contextMenuEl)) {
+      contextMenuEl.classList.add("activated");
+      contextMenuEl.remove();
     }
   }
 });
+
+// 生成表格
+async function conTable(json: appInfoJSON, type: string) {
+  return await new Promise<string>((resolve) => {
+    let items = json.items;
+    let payload = "";
+    let tbodyHtml = "";
+    let tpl = `
+    <div class="last-search breadcrumb">
+          <span class="breadcrumb-item">搜索结果</span>
+          <span class="breadcrumb-separator"><i class="fa fa-chevron-right"></i></span>
+          <span class="breadcrumb-item">${type}</span>
+          <span class="breadcrumb-separator"><i class="fa fa-chevron-right"></i></span>
+          <span class="breadcrumb-item">${keywordEl.value.trim()}</span>
+        </div>
+        <table id="result-table" class="table">
+          <thead>
+            <tr>
+              <th>应用名</th>
+              <th>包名</th>
+              <th>启动项</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            yrDlxhnzwWwd&^4=0f5/ltQl8555rbqclazz
+          </tbody>
+        </table>
+    `;
+    items.forEach((v) => {
+      payload += "<tr>";
+      payload += `<td appid="${v.id}">${v.appName}</td>`;
+      payload += `<td>${v.packageName}</td>`;
+      payload += `<td>${v.activityName}</td>`;
+      payload += "</tr>";
+    });
+    tbodyHtml = tpl.replace("yrDlxhnzwWwd&^4=0f5/ltQl8555rbqclazz", payload);
+    resolve(tbodyHtml);
+  });
+}
+
+// 过滤空白应用名
+function filterNil(yes = true) {
+  let tbodyEl = document.getElementById("tbody") as HTMLTableSectionElement;
+  if (tbodyEl) {
+    let trEls = tbodyEl.children;
+    if (yes) {
+      for (let index = 0; index < trEls.length; index++) {
+        if (trEls[index].children[0].textContent === "") {
+          trEls[index].setAttribute("style", "display: none;");
+        }
+      }
+    } else {
+      for (let index = 0; index < trEls.length; index++) {
+        trEls[index].removeAttribute("style");
+      }
+    }
+  }
+}
+
+// 注册双击选择区域
+function setSelectItem() {
+  let tbodyEl = document.getElementById("tbody") as HTMLTableSectionElement;
+  if (tbodyEl) {
+    let tdEls = tbodyEl.getElementsByTagName("td") as HTMLCollection;
+    for (let index = 0; index < tdEls.length; index++) {
+      tdEls[index].addEventListener("dblclick", (ev) => {
+        let tdEl = ev.target as HTMLTableCellElement;
+        let slText = selectText(tdEl);
+        copyText(slText);
+      });
+    }
+  }
+}
+
+// 设置加载动画
+function setLoadingAn() {
+  let ftHtml = `
+  <div class="result-area">
+        <div class="result-loading">
+            <div class="lds-dual-ring"></div>
+        </div>`;
+  return new Promise<void>((resolve) => {
+    resultAreaEl.innerHTML = ftHtml;
+    resolve();
+  });
+}
+
+// 下载文件
+async function downloadFile(url: string, fileName: string) {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      let response;
+      response = await fetch(url);
+      let blob = await response.blob();
+      let objectUrl = window.URL.createObjectURL(blob);
+      let a = document.createElement("a");
+      a.href = objectUrl;
+      a.download = fileName;
+      a.click();
+      a.remove();
+      resolve();
+    } catch (error) {
+      reject();
+    }
+  });
+}
+
+// 生成右键菜单
+function conConMenu() {
+  let contextMenuEl =
+    document.getElementById("td-context-menu") ?? document.createElement("div");
+  contextMenuEl.id = "td-context-menu";
+  contextMenuEl.classList.add("context-menu");
+  let tpl = `
+          <div class="context-menu-item disabled">
+            <div class="lds-circle loading"><div></div></div>
+          </div>
+          <div class="context-menu-item">
+            复制 appfilter.xml
+          </div>
+          <div class="context-menu-item">
+            复制 应用名
+          </div>
+          <div class="context-menu-item">
+            复制 包名
+          </div>
+          <div class="context-menu-item">
+            复制 启动项
+          </div>
+          <div class="context-menu-item">
+            复制 ID
+          </div>`;
+  let tbodyEl = document.getElementById("tbody") as HTMLTableSectionElement;
+  if (tbodyEl) {
+    let trEls = tbodyEl.children as HTMLCollection;
+    for (let index = 0; index < trEls.length; index++) {
+      trEls[index].addEventListener("contextmenu", (ev) => {
+        ev.preventDefault();
+        let cev = ev as PointerEvent;
+        document.body.appendChild(contextMenuEl);
+        contextMenuEl.oncontextmenu = (ev) => {
+          ev.preventDefault();
+        };
+        let menuClientWidth = contextMenuEl.clientWidth;
+        let menuClientHeight = contextMenuEl.clientHeight;
+        let clientWidth = document.documentElement.clientWidth;
+        let clientHeight = document.documentElement.clientHeight;
+        let pageX = cev.pageX;
+        let pageY = cev.pageY;
+        let x: number;
+        let y: number;
+        x = pageX;
+        y = pageY;
+        if (pageX + menuClientWidth > clientWidth) {
+          x -= menuClientWidth;
+          contextMenuEl.style.transformOrigin = `${menuClientWidth}px 0`;
+          if (pageY + menuClientHeight > clientHeight) {
+            y -= menuClientHeight;
+            contextMenuEl.style.transformOrigin = `${menuClientWidth}px ${menuClientHeight}px`;
+          }
+        } else {
+          contextMenuEl.style.transformOrigin = `0 0`;
+          if (pageY + menuClientHeight > clientHeight) {
+            y -= menuClientHeight;
+            contextMenuEl.style.transformOrigin = `0 ${menuClientHeight}px`;
+          }
+        }
+        contextMenuEl.innerHTML = tpl;
+        contextMenuEl.style.left = x + "px";
+        contextMenuEl.style.top = y + "px";
+        contextMenuEl.classList.remove("activated");
+        let el = ev.currentTarget as HTMLElement;
+        let appName = el.children[0].textContent as string;
+        let appPackageName = el.children[1].textContent as string;
+        let appActivity = el.children[2].textContent as string;
+        let appId = el.children[0].getAttribute("appid") as string;
+        let appFilter = `<item component="ComponentInfo{${appPackageName}/${appActivity}}" drawable="${appName}" />`;
+        let appIconWrapEl = contextMenuEl.children[0];
+        let copyAppFilterEl = contextMenuEl.children[1];
+        let copyAppNameEl = contextMenuEl.children[2];
+        let copyAppPackageNameEl = contextMenuEl.children[3];
+        let copyAppActivityEl = contextMenuEl.children[4];
+        let copyAppIdEl = contextMenuEl.children[5];
+        let iconEl = new Image();
+        appIconApi
+          .request({
+            query: {
+              appId: encodeURIComponent(appPackageName.trim()),
+            },
+          })
+          .then((response) => {
+            return response.json();
+          })
+          .then((json) => {
+            let imageInfo = json as IconJSON;
+            iconEl.src = imageInfo.image;
+            iconEl.onload = () => {
+              appIconWrapEl.replaceChildren(iconEl);
+              iconEl.addEventListener("click", (ev) => {
+                downloadFile(iconEl.src, `${appPackageName}.jpg`)
+                  .then(() => {
+                    contextMenuEl.classList.add("activated");
+                    setTimeout(() => {
+                      contextMenuEl.remove();
+                    }, 1000);
+                    conMsgBanner(
+                      document.createTextNode("图标下载成功！"),
+                      "success"
+                    );
+                  })
+                  .catch(() => {
+                    conMsgBanner(
+                      document.createTextNode("图标下载失败！"),
+                      "error"
+                    );
+                  });
+              });
+            };
+          });
+
+        copyAppFilterEl.addEventListener("click", (ev) => {
+          copyText(appFilter)
+            .then(() => {
+              contextMenuEl.classList.add("activated");
+              setTimeout(() => {
+                contextMenuEl.remove();
+              }, 1000);
+              conMsgBanner(document.createTextNode("复制成功！"), "success");
+            })
+            .catch(() => {
+              conMsgBanner(document.createTextNode("复制失败！"), "error");
+            });
+        });
+        copyAppNameEl.addEventListener("click", (ev) => {
+          copyText(appName)
+            .then(() => {
+              contextMenuEl.classList.add("activated");
+              setTimeout(() => {
+                contextMenuEl.remove();
+              }, 1000);
+              conMsgBanner(document.createTextNode("复制成功！"), "success");
+            })
+            .catch(() => {
+              conMsgBanner(document.createTextNode("复制失败！"), "error");
+            });
+        });
+        copyAppPackageNameEl.addEventListener("click", (ev) => {
+          copyText(appPackageName)
+            .then(() => {
+              contextMenuEl.classList.add("activated");
+              setTimeout(() => {
+                contextMenuEl.remove();
+              }, 1000);
+              conMsgBanner(document.createTextNode("复制成功！"), "success");
+            })
+            .catch(() => {
+              conMsgBanner(document.createTextNode("复制失败！"), "error");
+            });
+        });
+        copyAppActivityEl.addEventListener("click", (ev) => {
+          copyText(appActivity)
+            .then(() => {
+              contextMenuEl.classList.add("activated");
+              setTimeout(() => {
+                contextMenuEl.remove();
+              }, 1000);
+              conMsgBanner(document.createTextNode("复制成功！"), "success");
+            })
+            .catch(() => {
+              conMsgBanner(document.createTextNode("复制失败！"), "error");
+            });
+        });
+        copyAppIdEl.addEventListener("click", (ev) => {
+          copyText(appId)
+            .then(() => {
+              contextMenuEl.classList.add("activated");
+              setTimeout(() => {
+                contextMenuEl.remove();
+              }, 1000);
+              conMsgBanner(document.createTextNode("复制成功！"), "success");
+            })
+            .catch(() => {
+              conMsgBanner(document.createTextNode("复制失败！"), "error");
+            });
+        });
+      });
+    }
+  }
+}
+
+// 生成提示
+function conMsgBanner(el: Node, status: string) {
+  let bannerEl = document.createElement("div");
+  bannerEl.classList.add("fade-banner");
+  bannerEl.classList.add(status);
+  bannerEl.append(el);
+  document.body.appendChild(bannerEl);
+  setTimeout(() => {
+    bannerEl.remove();
+  }, 4000);
+}
