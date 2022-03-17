@@ -287,8 +287,7 @@ function setSelectItem() {
     for (let index = 0; index < tdEls.length; index++) {
       tdEls[index].addEventListener("dblclick", (ev) => {
         let tdEl = ev.target as HTMLTableCellElement;
-        let slText = selectText(tdEl);
-        copyText(slText);
+        selectText(tdEl);
       });
     }
   }
@@ -424,7 +423,7 @@ function conConMenu() {
                     contextMenuEl.classList.add("activated");
                     setTimeout(() => {
                       contextMenuEl.remove();
-                    }, 1000);
+                    }, 500);
                     conMsgBanner(
                       document.createTextNode("图标下载成功！"),
                       "success"
@@ -446,7 +445,7 @@ function conConMenu() {
               contextMenuEl.classList.add("activated");
               setTimeout(() => {
                 contextMenuEl.remove();
-              }, 1000);
+              }, 500);
               conMsgBanner(document.createTextNode("复制成功！"), "success");
             })
             .catch(() => {
@@ -459,7 +458,7 @@ function conConMenu() {
               contextMenuEl.classList.add("activated");
               setTimeout(() => {
                 contextMenuEl.remove();
-              }, 1000);
+              }, 500);
               conMsgBanner(document.createTextNode("复制成功！"), "success");
             })
             .catch(() => {
@@ -472,7 +471,7 @@ function conConMenu() {
               contextMenuEl.classList.add("activated");
               setTimeout(() => {
                 contextMenuEl.remove();
-              }, 1000);
+              }, 500);
               conMsgBanner(document.createTextNode("复制成功！"), "success");
             })
             .catch(() => {
@@ -485,7 +484,7 @@ function conConMenu() {
               contextMenuEl.classList.add("activated");
               setTimeout(() => {
                 contextMenuEl.remove();
-              }, 1000);
+              }, 500);
               conMsgBanner(document.createTextNode("复制成功！"), "success");
             })
             .catch(() => {
@@ -498,7 +497,7 @@ function conConMenu() {
               contextMenuEl.classList.add("activated");
               setTimeout(() => {
                 contextMenuEl.remove();
-              }, 1000);
+              }, 500);
               conMsgBanner(document.createTextNode("复制成功！"), "success");
             })
             .catch(() => {
