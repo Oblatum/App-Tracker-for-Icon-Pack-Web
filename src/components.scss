@@ -210,12 +210,7 @@
 
 @keyframes menucreate {
   from {
-    transform: scale(1);
-    visibility: hidden;
-  }
-  1% {
     transform: scale(0);
-    visibility: visible;
   }
   to {
     transform: scale(1);
