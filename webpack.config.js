@@ -2,6 +2,7 @@ const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const WorkboxPlugin = require("workbox-webpack-plugin");
 
 const config = {
   entry: "./src/index.ts",
@@ -64,6 +65,7 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
+      title: "App Tracker For Icon Pack Web",
       filename: "index.html",
       template: "./src/index.html",
       minify: {
@@ -72,12 +74,16 @@ const config = {
         removeComments: true,
       },
       hash: true,
-      favicon: './src/favicon.png'
+      favicon: "./src/favicon.png",
+    }),
+    new WorkboxPlugin.GenerateSW({
+      clientsClaim: true,
+      skipWaiting: true,
     }),
     new MiniCssExtractPlugin(),
   ],
   resolve: {
-    extensions: [".tsx", ".ts", ".js",],
+    extensions: [".tsx", ".ts", ".js"],
   },
 };
 

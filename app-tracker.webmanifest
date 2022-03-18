@@ -1,0 +1,18 @@
+{
+    "short_name": "App Trakcer",
+    "name": "App Tracker For Icon Pack Web?",
+    "icons": [
+      {
+        "src": "./src/favicon.png",
+        "type": "image/png",
+        "sizes": "192x192"
+      }
+    ],
+    "start_url": "/?source=pwa",
+    "background_color": "#8f8cff",
+    "display": "standalone",
+    "scope": "/",
+    "theme_color": "#8f8cff",
+    "description": "为解决图标包/主题作者寻找包名困难的问题而生。"
+  }
+  
