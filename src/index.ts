@@ -285,13 +285,11 @@ function setSelectItem() {
   if (tbodyEl) {
     let tdEls = tbodyEl.getElementsByTagName("td") as HTMLCollection;
     for (let index = 0; index < tdEls.length; index++) {
-      tdEls[index].addEventListener("dblclick", (ev) => {
+      tdEls[index].addEventListener("dblclick", (ev) => {        
         let tdEl = ev.target as HTMLTableCellElement;
         let cev = ev as PointerEvent;
         if (cev.pointerType != "mouse" && ("ontouchstart" in window)) {
-          tbodyEl.style.userSelect = "none";
         } else {
-          tbodyEl.style.userSelect = "all";
           selectText(tdEl);
         }
       });
