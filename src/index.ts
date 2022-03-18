@@ -359,6 +359,7 @@ function conConMenu() {
         ev.preventDefault();
         let cev = ev as PointerEvent;
         document.body.appendChild(contextMenuEl);
+        contextMenuEl.innerHTML = tpl;
         contextMenuEl.oncontextmenu = (ev) => {
           ev.preventDefault();
         };
@@ -386,7 +387,6 @@ function conConMenu() {
             contextMenuEl.style.transformOrigin = `0 ${menuClientHeight}px`;
           }
         }
-        contextMenuEl.innerHTML = tpl;
         contextMenuEl.style.left = x + "px";
         contextMenuEl.style.top = y + "px";
         contextMenuEl.classList.remove("activated");
