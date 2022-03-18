@@ -1,4 +1,3 @@
-const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -39,7 +38,7 @@ const config = {
         test: /\.png$/,
         use: [
           {
-            loader: "url-loader",
+            loader: "file-loader",
             options: {
               mimetype: "image/png",
             },
@@ -56,6 +55,11 @@ const config = {
             },
           },
         ],
+      },
+      {
+        test: /\.webmanifest$/i,
+        use: 'webpack-webmanifest-loader',
+        type: 'asset/resource',
       },
       {
         test: /\.scss$/,

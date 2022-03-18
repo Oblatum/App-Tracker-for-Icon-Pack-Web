@@ -1,5 +1,6 @@
 import "./style.scss";
 import "./favicon.png";
+import "../app-tracker.webmanifest"
 import "@fortawesome/fontawesome-free/css/all.css";
 import {
   appIconApi,
