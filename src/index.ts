@@ -285,8 +285,11 @@ function setSelectItem() {
   if (tbodyEl) {
     let tdEls = tbodyEl.getElementsByTagName("td") as HTMLCollection;
     for (let index = 0; index < tdEls.length; index++) {
-      tdEls[index].addEventListener("dblclick", (ev) => {
+      tdEls[index].addEventListener("dblclick", (ev) => {        
         let tdEl = ev.target as HTMLTableCellElement;
+        if("ontouchstart" in window) {
+          tbodyEl.style.userSelect = "none";
+        }
         selectText(tdEl);
       });
     }
@@ -357,6 +360,7 @@ function conConMenu() {
     for (let index = 0; index < trEls.length; index++) {
       trEls[index].addEventListener("contextmenu", (ev) => {
         ev.preventDefault();
+        
         let cev = ev as PointerEvent;
         document.body.appendChild(contextMenuEl);
         contextMenuEl.innerHTML = tpl;
