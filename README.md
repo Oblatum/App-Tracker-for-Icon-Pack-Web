@@ -8,7 +8,7 @@
 
 - 应用名 / 包名 / 启动项名互查功能 -> [去查询](https://app-tracker.k2t3k.tk)
 - 客户端应用信息上传功能 -> [去上传](https://github.com/Oblatum/App-Tracker-for-Icon-Pack-Client-Side-Android-Version/releases)
-- 图标包申请统计功能（需要图标包客户端支持，API 文档施工中，试用请提交 Issue）
+- 服务端数据库 -> [去搭建](https://github.com/Oblatum/App-Tracker-for-Icon-Pack-Server-Side)
 
 ### 如何搭建 Web 端？
 

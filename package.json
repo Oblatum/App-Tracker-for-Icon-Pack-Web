@@ -1,12 +1,13 @@
 {
-  "name": "vite-project",
+  "name": "app-tracker-web",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "https-preview": "serve dist"
+    "https-preview": "serve dist",
+    "build-prod": "vite build"
   },
   "devDependencies": {
     "https-localhost": "^4.7.1",
