@@ -16,15 +16,13 @@ if ("serviceWorker" in navigator) {
   registerSW();
 }
 
-let yearEl = document.getElementById("year") as HTMLElement;
-let xqEls = document.getElementsByClassName("xq") as HTMLCollection;
+let yearEl = document.getElementById("year")!;
+let xqEls = document.getElementsByClassName("xq")!;
 let formEl = document.getElementById("form") as HTMLFormElement;
 let keywordEl = document.getElementById("keyword") as HTMLInputElement;
 let searchTypeEl = document.getElementById("search-type") as HTMLSelectElement;
-let resultAreaEl = document.getElementsByClassName(
-  "result-area"
-)[0] as HTMLElement;
-let hideNilEl = document.getElementById("hide-nil") as HTMLElement;
+let resultAreaEl = document.getElementsByClassName("result-area")[0]!;
+let hideNilEl = document.getElementById("hide-nil")!;
 let searchTypeAttrs = [
   {
     placeholder: "关键词……",
@@ -51,7 +49,6 @@ let searchTypeAttrs = [
 // 自定义事件：DOM 更新
 const domUpdateEvent = new CustomEvent("domupdate");
 document.addEventListener("domupdate", async () => {
-  console.log("Dom 已更新");
   conConMenu();
   setSelectItem();
   if (hideNilEl.classList.contains("on")) {
@@ -186,6 +183,12 @@ searchTypeEl.addEventListener("change", (ev) => {
   keywordEl.disabled = searchTypeAttrs[type].disabled;
 });
 
+// isIOS
+function isIOS() {
+  let uaRegex = /(iPad|iPhone); CPU (iPad|iPhone) OS 1\d_.* like Mac OS X/gm;
+  let pfRegex = /iPad|iPhone/gm;
+  return pfRegex.test(navigator.platform) || uaRegex.test(navigator.userAgent);
+}
 // 选择文本
 function selectText(el: HTMLElement) {
   window.getSelection()?.removeAllRanges();
@@ -194,7 +197,7 @@ function selectText(el: HTMLElement) {
   let selectedContent: string;
   range.selectNodeContents(el);
   selection?.addRange(range);
-  selectedContent = selection?.toString() as string;
+  selectedContent = selection?.toString()!;
   return selectedContent;
 }
 
@@ -217,8 +220,7 @@ async function copyText(text: string) {
 
 // contextmenu 失焦
 document.addEventListener("mousedown", (ev) => {
-  let cev = ev as MouseEvent;
-  let contextMenuEl = document.getElementById("td-context-menu") as HTMLElement;
+  let contextMenuEl = document.getElementById("td-context-menu")!;
   const path = ev.composedPath();
   if (contextMenuEl) {
     if (!path.includes(contextMenuEl)) {
@@ -269,7 +271,7 @@ async function conTable(json: appInfoJSON, type: string) {
 
 // 过滤空白应用名
 function filterNil(yes = true) {
-  let tbodyEl = document.getElementById("tbody") as HTMLTableSectionElement;
+  let tbodyEl = document.getElementById("tbody")!;
   if (tbodyEl) {
     let trEls = tbodyEl.children;
     if (yes) {
@@ -288,9 +290,9 @@ function filterNil(yes = true) {
 
 // 注册双击选择区域
 function setSelectItem() {
-  let tbodyEl = document.getElementById("tbody") as HTMLTableSectionElement;
+  let tbodyEl = document.getElementById("tbody")!;
   if (tbodyEl) {
-    let tdEls = tbodyEl.getElementsByTagName("td") as HTMLCollection;
+    let tdEls = tbodyEl.getElementsByTagName("td")!;
     for (let index = 0; index < tdEls.length; index++) {
       tdEls[index].addEventListener("dblclick", (ev) => {
         let tdEl = ev.target as HTMLTableCellElement;
@@ -337,7 +339,7 @@ async function downloadFile(url: string, fileName: string) {
   });
 }
 
-// 生成右键菜单
+// 生成上下文菜单
 function conConMenu() {
   let contextMenuEl =
     document.getElementById("td-context-menu") ?? document.createElement("div");
@@ -362,13 +364,53 @@ function conConMenu() {
           <div class="context-menu-item">
             复制 ID
           </div>`;
-  let tbodyEl = document.getElementById("tbody") as HTMLTableSectionElement;
+  let tbodyEl = document.getElementById("tbody")!;
   if (tbodyEl) {
-    let trEls = tbodyEl.children as HTMLCollection;
+    let trEls = tbodyEl.children!;
     for (let index = 0; index < trEls.length; index++) {
+      if (isIOS()) {
+        let timer: ReturnType<typeof setTimeout>;
+        trEls[index].addEventListener("touchstart", (ev) => {
+          timer = setTimeout(() => {
+            let cev = ev as PointerEvent;
+            const iosContextMenu = new PointerEvent("contextmenu", {
+              clientX: cev.pageX,
+              clientY: cev.pageY,
+            });
+            trEls[index].dispatchEvent(iosContextMenu);
+          }, 350);
+        });
+
+        document.addEventListener("touchstart", (ev) => {
+          if (ev.composedPath().includes(tbodyEl)) {
+            document.body.classList.add("disabled");
+          } else document.body.classList.remove("disabled");
+        });
+        document.addEventListener("touchmove", (ev) => {
+          if (ev.composedPath().includes(trEls[index])) {
+            if (timer != undefined) {
+              clearTimeout(timer);
+            }
+          }
+        });
+        document.addEventListener("touchend", (ev) => {
+          if (ev.composedPath().includes(trEls[index])) {
+            if (timer != undefined) {
+              clearTimeout(timer);
+            }
+          }
+        });
+        document.addEventListener("touchcancel", (ev) => {
+          if (ev.composedPath().includes(trEls[index])) {
+            if (timer != undefined) {
+              clearTimeout(timer);
+            }
+          }
+        });
+      }
+
       trEls[index].addEventListener("contextmenu", (ev) => {
         ev.preventDefault();
-
         let cev = ev as PointerEvent;
         document.body.appendChild(contextMenuEl);
         contextMenuEl.innerHTML = tpl;
@@ -403,10 +445,10 @@ function conConMenu() {
         contextMenuEl.style.top = y + "px";
         contextMenuEl.classList.remove("activated");
         let el = ev.currentTarget as HTMLElement;
-        let appName = el.children[0].textContent as string;
-        let appPackageName = el.children[1].textContent as string;
-        let appActivity = el.children[2].textContent as string;
-        let appId = el.children[0].getAttribute("appid") as string;
+        let appName = el.children[0].textContent!;
+        let appPackageName = el.children[1].textContent!;
+        let appActivity = el.children[2].textContent!;
+        let appId = el.children[0].getAttribute("appid")!;
         let appFilter = `<item component="ComponentInfo{${appPackageName}/${appActivity}}" drawable="${appName}" />`;
         let appIconWrapEl = contextMenuEl.children[0];
         let copyAppFilterEl = contextMenuEl.children[1];
@@ -429,7 +471,7 @@ function conConMenu() {
             iconEl.src = imageInfo.image;
             iconEl.onload = () => {
               appIconWrapEl.replaceChildren(iconEl);
-              iconEl.addEventListener("click", (ev) => {
+              iconEl.addEventListener("click", () => {
                 downloadFile(iconEl.src, `${appPackageName}.jpg`)
                   .then(() => {
                     contextMenuEl.classList.add("activated");
@@ -451,7 +493,7 @@ function conConMenu() {
             };
           });
 
-        copyAppFilterEl.addEventListener("click", (ev) => {
+        copyAppFilterEl.addEventListener("click", () => {
           copyText(appFilter)
             .then(() => {
               contextMenuEl.classList.add("activated");
@@ -464,7 +506,7 @@ function conConMenu() {
               conMsgBanner(document.createTextNode("复制失败！"), "error");
             });
         });
-        copyAppNameEl.addEventListener("click", (ev) => {
+        copyAppNameEl.addEventListener("click", () => {
           copyText(appName)
             .then(() => {
               contextMenuEl.classList.add("activated");
@@ -477,7 +519,7 @@ function conConMenu() {
               conMsgBanner(document.createTextNode("复制失败！"), "error");
             });
         });
-        copyAppPackageNameEl.addEventListener("click", (ev) => {
+        copyAppPackageNameEl.addEventListener("click", () => {
           copyText(appPackageName)
             .then(() => {
               contextMenuEl.classList.add("activated");
@@ -490,7 +532,7 @@ function conConMenu() {
               conMsgBanner(document.createTextNode("复制失败！"), "error");
             });
         });
-        copyAppActivityEl.addEventListener("click", (ev) => {
+        copyAppActivityEl.addEventListener("click", () => {
           copyText(appActivity)
             .then(() => {
               contextMenuEl.classList.add("activated");
@@ -503,7 +545,7 @@ function conConMenu() {
               conMsgBanner(document.createTextNode("复制失败！"), "error");
             });
         });
-        copyAppIdEl.addEventListener("click", (ev) => {
+        copyAppIdEl.addEventListener("click", () => {
           copyText(appId)
             .then(() => {
               contextMenuEl.classList.add("activated");

@@ -7,6 +7,10 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  &.disabled {
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
 }
 
 header {
@@ -160,6 +164,7 @@ main {
       font-size: 0.9rem;
       font-family: "Courier New", Courier, monospace;
       word-break: break-all;
+      -webkit-touch-callout: none !important;
     }
   }
 
@@ -201,6 +206,11 @@ footer {
     margin: auto;
     display: block;
   }
+}
+
+.ios {
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 @keyframes imgfadein {
