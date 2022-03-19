@@ -1,6 +1,4 @@
 import "./style.scss";
-import "./favicon.png";
-import "../app-tracker.webmanifest"
 import "@fortawesome/fontawesome-free/css/all.css";
 import {
   appIconApi,
@@ -11,15 +9,11 @@ import {
 } from "./api";
 import { appInfoJSON, IconJSON } from "./types";
 
+import { registerSW } from "virtual:pwa-register";
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js').then(registration => {
-      console.log('SW registered: ', registration);
-    }).catch(registrationError => {
-      console.log('SW registration failed: ', registrationError);
-    });
-  });
+if ("serviceWorker" in navigator) {
+  // && !/localhost/.test(window.location)) {
+  registerSW();
 }
 
 let yearEl = document.getElementById("year") as HTMLElement;
@@ -298,10 +292,10 @@ function setSelectItem() {
   if (tbodyEl) {
     let tdEls = tbodyEl.getElementsByTagName("td") as HTMLCollection;
     for (let index = 0; index < tdEls.length; index++) {
-      tdEls[index].addEventListener("dblclick", (ev) => {        
+      tdEls[index].addEventListener("dblclick", (ev) => {
         let tdEl = ev.target as HTMLTableCellElement;
         let cev = ev as PointerEvent;
-        if (cev.pointerType != "mouse" && ("ontouchstart" in window)) {
+        if (cev.pointerType != "mouse" && "ontouchstart" in window) {
         } else {
           selectText(tdEl);
         }
