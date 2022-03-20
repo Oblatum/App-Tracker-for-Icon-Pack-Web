@@ -332,29 +332,43 @@ function setLoadingAn() {
 // 下载文件
 async function downloadFile(url: string, fileName: string) {
   return new Promise<void>(async (resolve, reject) => {
-    let response;
-    response = await fetch(url);
-    console.log("Wdndm");
-
-    console.log(response);
-
-    if (response.ok) {
-      console.log("ok");
-
-      let contextType = response.headers.get("content-type");
-      let blob = await response.blob();
-      let objectUrl = window.URL.createObjectURL(blob);
-      let a = document.createElement("a");
-      a.href = objectUrl;
-      a.download =
-        fileName +
-          "." +
-          ImageMineType[contextType as keyof typeof ImageMineType] ?? "png";
-      a.click();
-      a.remove();
-      resolve();
+    let p = new Promise((resolve, reject) => {
+      fetch(url)
+        .catch((error) => {
+          console.log("跨域了，但是没关系");
+          let a = document.createElement("a");
+          a.href = url;
+          a.target = "_blank";
+          a.download = fileName + "." + "png";
+          a.click();
+          a.remove();
+          reject(error);
+        })
+        .then((response) => {
+          resolve(response);
+        });
+    });
+    let response = await p;
+    if (response instanceof Response) {
+      if (response.ok) {
+        let contextType = response.headers.get("content-type");
+        let blob = await response.blob();
+        let objectUrl = window.URL.createObjectURL(blob);
+        let a = document.createElement("a");
+        a.href = objectUrl;
+        a.download =
+          fileName +
+            "." +
+            ImageMineType[contextType as keyof typeof ImageMineType] ?? "png";
+        a.click();
+        a.remove();
+        resolve();
+      } else {
+        console.log("未知错误");
+        reject();
+      }
     } else {
-      console.log("error");
+      console.log("网络挂了");
       reject();
     }
   });
