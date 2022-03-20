@@ -70,8 +70,7 @@ class API {
     }
 
     return await fetch(url, {
-      method,
-      mode: 'cors',
+      method
     })
   }
 }

@@ -8,9 +8,7 @@ import {
   signatureAppInfoApi,
 } from "./api";
 import { appInfoJSON, IconJSON } from "./types";
-
 import { registerSW } from "virtual:pwa-register";
-
 if ("serviceWorker" in navigator) {
   // && !/localhost/.test(window.location)) {
   registerSW();
@@ -45,6 +43,14 @@ let searchTypeAttrs = [
     api: signatureAppInfoApi,
   },
 ];
+
+enum ImageMineType {
+  "image/svg+xml" = "svg",
+  "image/png" = "png",
+  "image/jpeg" = "jpg",
+  "image/webp" = "webp",
+  "image/gif" = "gif",
+}
 
 // 自定义事件：DOM 更新
 const domUpdateEvent = new CustomEvent("domupdate");
@@ -326,18 +332,29 @@ function setLoadingAn() {
 // 下载文件
 async function downloadFile(url: string, fileName: string) {
   return new Promise<void>(async (resolve, reject) => {
-    try {
-      let response;
-      response = await fetch(url);
+    let response;
+    response = await fetch(url);
+    console.log("Wdndm");
+
+    console.log(response);
+
+    if (response.ok) {
+      console.log("ok");
+
+      let contextType = response.headers.get("content-type");
       let blob = await response.blob();
       let objectUrl = window.URL.createObjectURL(blob);
       let a = document.createElement("a");
       a.href = objectUrl;
-      a.download = fileName;
+      a.download =
+        fileName +
+          "." +
+          ImageMineType[contextType as keyof typeof ImageMineType] ?? "png";
       a.click();
       a.remove();
       resolve();
-    } catch (error) {
+    } else {
+      console.log("error");
       reject();
     }
   });
@@ -348,7 +365,7 @@ async function downloadFile(url: string, fileName: string) {
 function unlockScroll() {
   let brEl = document.getElementsByClassName("breadcrumb-item")[0]!;
   brEl.addEventListener("click", () => {
-  let tableEl = document.getElementById("result-table") as HTMLElement;
+    let tableEl = document.getElementById("result-table") as HTMLElement;
     tableEl.classList.add("expanded");
   });
   let xqEl = document.getElementById("xq") as HTMLElement;
@@ -491,7 +508,7 @@ function conConMenu() {
             iconEl.onload = () => {
               appIconWrapEl.replaceChildren(iconEl);
               iconEl.addEventListener("click", () => {
-                downloadFile(iconEl.src, `${appPackageName}.jpg`)
+                downloadFile(iconEl.src, appPackageName)
                   .then(() => {
                     contextMenuEl.classList.add("activated");
                     setTimeout(() => {
