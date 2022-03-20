@@ -352,7 +352,7 @@ function unlockScroll() {
     tableEl.classList.add("expanded");
   });
   let xqEl = document.getElementById("xq") as HTMLElement;
-  xqEl.addEventListener("click", (ev) => {
+  xqEl.addEventListener("click", () => {
     let tableEl = document.getElementById("result-table") as HTMLElement;
     tableEl.classList.toggle("expanded");
   });

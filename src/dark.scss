@@ -23,6 +23,12 @@
     thead {
       background-color: $color-grey-dark;
     }
+
+    tbody {
+      tr {
+        background-color: #121212;
+      }
+    }
   }
 
   ::selection {
