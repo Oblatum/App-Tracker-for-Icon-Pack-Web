@@ -354,7 +354,7 @@ function unlockScroll() {
   let xqEl = document.getElementById("xq") as HTMLElement;
   xqEl.addEventListener("click", () => {
     let tableEl = document.getElementById("result-table") as HTMLElement;
-    tableEl.classList.toggle("expanded");
+    tableEl.classList.remove("expanded");
   });
 }
 
