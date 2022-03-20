@@ -51,6 +51,7 @@ const domUpdateEvent = new CustomEvent("domupdate");
 document.addEventListener("domupdate", async () => {
   conConMenu();
   setSelectItem();
+  unlockScroll();
   if (hideNilEl.classList.contains("on")) {
     filterNil();
     localStorage.setItem("hideNil", "true");
@@ -251,6 +252,9 @@ async function conTable(json: appInfoJSON, type: string) {
               <th>包名</th>
               <th>启动项</th>
             </tr>
+            <td id="xq">
+                <i class="fa fa-xmark"></i>
+              </td>
           </thead>
           <tbody id="tbody">
             yrDlxhnzwWwd&^4=0f5/ltQl8555rbqclazz
@@ -336,6 +340,21 @@ async function downloadFile(url: string, fileName: string) {
     } catch (error) {
       reject();
     }
+  });
+}
+
+// unlock height
+
+function unlockScroll() {
+  let brEl = document.getElementsByClassName("breadcrumb-item")[0]!;
+  brEl.addEventListener("click", () => {
+  let tableEl = document.getElementById("result-table") as HTMLElement;
+    tableEl.classList.add("expanded");
+  });
+  let xqEl = document.getElementById("xq") as HTMLElement;
+  xqEl.addEventListener("click", (ev) => {
+    let tableEl = document.getElementById("result-table") as HTMLElement;
+    tableEl.classList.toggle("expanded");
   });
 }
 
