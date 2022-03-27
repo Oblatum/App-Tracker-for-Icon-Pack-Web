@@ -33,7 +33,7 @@ class API {
     this.url = url;
     this.opts = opts;
   }
-  async request(opts: fetchOptions, method = httpMethods.get) {
+  async request(opts: fetchOptions = {}, method = httpMethods.get) {
     let { query, body, path } = opts;
     let url = this.baseurl + this.url;
     let code: number;

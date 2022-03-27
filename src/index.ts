@@ -144,7 +144,7 @@ formEl.addEventListener("submit", (ev) => {
     case 2:
       setLoadingAn().then(() => {
         api
-          .request({})
+          .request()
           .then((response) => {
             return response.json();
           })
