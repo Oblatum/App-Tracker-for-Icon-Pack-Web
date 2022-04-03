@@ -1,3 +1,4 @@
+
 interface fetchOptions {
   query?: apiQuery;
   body?: Object;
@@ -25,7 +26,7 @@ interface apiQuery {
 interface apiBody {}
 
 class API {
-  baseurl = "https://bot.k2t3k.tk/api";
+  baseurl = import.meta.env.VITE_APP_BASE_API;
   url: string;
   opts: fetchOptions;
 

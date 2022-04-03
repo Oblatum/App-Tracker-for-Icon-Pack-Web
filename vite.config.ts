@@ -1,5 +1,5 @@
 import { VitePWA } from "vite-plugin-pwa";
-import { build, defineConfig } from "vite";
+import { defineConfig } from "vite";
 // import icon from "./src/favicon.png";
 
 export default defineConfig({
