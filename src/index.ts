@@ -10,7 +10,6 @@ import {
 import { appInfoJSON, IconJSON } from "./types";
 import { registerSW } from "virtual:pwa-register";
 if ("serviceWorker" in navigator) {
-  // && !/localhost/.test(window.location)) {
   registerSW();
 }
 
@@ -20,7 +19,6 @@ let formEl = document.getElementById("form") as HTMLFormElement;
 let keywordEl = document.getElementById("keyword") as HTMLInputElement;
 let searchTypeEl = document.getElementById("search-type") as HTMLSelectElement;
 let resultAreaEl = document.getElementsByClassName("result-area")[0]!;
-let hideNilEl = document.getElementById("hide-nil")!;
 let searchTypeAttrs = [
   {
     placeholder: "关键词……",
@@ -58,34 +56,16 @@ document.addEventListener("domupdate", async () => {
   conConMenu();
   setSelectItem();
   unlockScroll();
-  if (hideNilEl.classList.contains("on")) {
-    filterNil();
-    localStorage.setItem("hideNil", "true");
-  } else {
-    filterNil(false);
-    localStorage.removeItem("hideNil");
-  }
 });
 
 // 立即执行
 // 当前年份
 yearEl.textContent = new Date().getFullYear().toString();
 
-// 复原开关状态
-if (localStorage.getItem("hideNil")) {
-  hideNilEl.classList.add("on");
-}
-
 /**
  * 监听
  * **/
 
-// 注册隐藏空白开关
-hideNilEl.addEventListener("click", (ev) => {
-  let el = ev.currentTarget as HTMLElement;
-  el.classList.toggle("on");
-  document.dispatchEvent(domUpdateEvent);
-});
 
 // 注册关闭按钮
 for (let index = 0; index < xqEls.length; index++) {
@@ -277,25 +257,6 @@ async function conTable(json: appInfoJSON, type: string) {
     tbodyHtml = tpl.replace("yrDlxhnzwWwd&^4=0f5/ltQl8555rbqclazz", payload);
     resolve(tbodyHtml);
   });
-}
-
-// 过滤空白应用名
-function filterNil(yes = true) {
-  let tbodyEl = document.getElementById("tbody")!;
-  if (tbodyEl) {
-    let trEls = tbodyEl.children;
-    if (yes) {
-      for (let index = 0; index < trEls.length; index++) {
-        if (trEls[index].children[0].textContent === "") {
-          trEls[index].setAttribute("style", "display: none;");
-        }
-      }
-    } else {
-      for (let index = 0; index < trEls.length; index++) {
-        trEls[index].removeAttribute("style");
-      }
-    }
-  }
 }
 
 // 注册双击选择区域
