@@ -3,21 +3,23 @@
     <t-banner>两分钟时间，下载 Android 客户端帮助我们丰富数据库 Github 酷安 </t-banner>
     <t-heading class="heading">App Tracker For Icon Pack</t-heading>
     <t-form class="form" />
-    <main class="main">
-      <t-breadcrumb class="breadcrumb" />
-      <t-table @mounted="handleTable" :height="tableHeight" />
+    <main class="main" v-loading="loading">
+      <t-breadcrumb class="breadcrumb" v-show="!loading" />
+      <t-table @mounted="handleTable" :height="tableHeight" v-show="!loading" />
     </main>
   </div>
-  <footer class="footer">©2022-2022  Indusy   Oblatum  反馈群：868795356</footer>
+  <footer class="footer">©{{ year }}-2022  Indusy   Oblatum  反馈群：868795356</footer>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import TForm from "@/components/form/t-form.vue";
 import THeading from "@/components/base/t-heading.vue";
 import TBanner from "@/components/base/t-banner.vue";
 import TBreadcrumb from "@/components/base/t-breadcrumb.vue";
 import TTable from "@/components/table/t-table.vue";
+import emitter from "@/components/mitt";
+import { ResultData } from "@/components/form/fetch";
 
 export default defineComponent({
   components: {
@@ -30,12 +32,25 @@ export default defineComponent({
   data() {
     return {
       tableHeight: 0,
-      tableData: []
+      tableData: [],
+      year: (new Date()).getFullYear()
     }
   },
   methods: {
     handleTable(value: number) {
       this.$data.tableHeight = value
+    }
+  },
+  setup() {
+    const loading = ref(false)
+    emitter.on('update', (val) => {
+      loading.value = true
+      ;(val as Promise<ResultData>).then(() => {
+        loading.value = false
+      })
+    })
+    return {
+      loading
     }
   }
 })

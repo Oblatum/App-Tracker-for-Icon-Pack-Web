@@ -31,6 +31,7 @@ onMounted(() => {
   background-color: rgba(115, 255, 162, 0.8);
   border-bottom: 1px solid rgba(87, 241, 87, 0.8);
   box-shadow: 0 3px 5px rgba(32, 255, 106, 0.8);
+  text-align: center;
 
   .content {
     flex-grow: 1;

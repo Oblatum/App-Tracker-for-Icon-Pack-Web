@@ -1,10 +1,10 @@
 <template>
   <div class="form-wrap">
     <form class="form" @submit.prevent="handleSubmit">
-      <select name="" id="" v-bind="currentType">
-        <option v-for="item in searchType" :key="item.value">{{ item.text }}</option>
+      <select ref="selectRef" v-model="currentType" @change="changeDisabled">
+        <option v-for="item in searchType" :key="item.value" :value="item.value">{{ item.text }}</option>
       </select>
-      <input type="text">
+      <input type="text" v-model="keyword" :required="!inputDisabled" :disabled="inputDisabled">
       <button class="btn" type="submit"><svg t="1653130909358" class="icon" viewBox="0 0 1024 1024" version="1.1"
           xmlns="http://www.w3.org/2000/svg" p-id="1458" width="16" height="16">
           <path
@@ -17,27 +17,41 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
+import { getAll, getRegex, getSearch, getSignature } from './fetch';
+import emitter from '../mitt'
 
 const searchType = reactive([
   {
     value: 1,
-    text: "搜索"
+    text: "搜索",
+    placeholder: "Keywords..."
   },
   {
     value: 2,
-    text: "正则"
+    text: "正则",
+    placeholder: "Regex..."
   },
   {
     value: 3,
-    text: "来源"
+    text: "来源",
+    placeholder: "Signature..."
   },
   {
     value: 4,
-    text: "浏览"
+    text: "浏览",
+    placeholder: "Browse all"
   }
 ])
 
 const currentType = ref(1)
+const inputDisabled = ref(false)
+
+function changeDisabled() {
+  if (currentType.value == 4)
+    inputDisabled.value = true
+  else
+    inputDisabled.value = false
+}
 
 function debounce<T, K>(func: (...args: any[]) => T, delay = 300, immediate = true) {
   let timer = 0
@@ -57,11 +71,36 @@ function debounce<T, K>(func: (...args: any[]) => T, delay = 300, immediate = tr
   }
 }
 
+const keyword = ref<string>('')
+const selectRef = ref<HTMLSelectElement | null>(null)
+
 const handleSubmit = debounce<void, Event>(submitForm)
 
-function submitForm(evt: Event) {
-  console.log("提交了");
+function emitSearch() {
+  emitter.emit('searched', ['搜索结果', searchType.find(val => {
+        return +selectRef!.value!.value === val.value
+      })?.text, keyword.value])
+}
 
+function submitForm() {
+  switch (currentType.value) {
+    case 1:
+      emitSearch()
+      emitter.emit('update', getSearch({q: keyword.value}))
+      break
+    case 2:
+      emitSearch()
+      emitter.emit('update', getRegex({regex: keyword.value}))
+      break
+    case 3:
+      emitSearch()
+      emitter.emit('update', getSignature({signature: keyword.value}))
+      break
+    case 4:
+      emitSearch()
+      emitter.emit('update', getAll())
+      break
+  }
 }
 
 </script>

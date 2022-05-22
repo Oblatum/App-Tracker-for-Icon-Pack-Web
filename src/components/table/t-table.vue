@@ -1,5 +1,5 @@
 <template>
-  <table class="table" ref="rootRef">
+  <table class="table" ref="rootRef" v-if="length">
     <thead>
       <tr>
         <th>应用名</th>
@@ -8,38 +8,45 @@
       </tr>
     </thead>
     <tbody :style="tbStyle">
-      <tr>
-        <td>QQ</td>
-        <td>com.tencent.im.qq</td>
-        <td>activity.main.im.tencent.qq</td>
+      <tr v-for="(item, index) in tableItems" :key="index">
+        <td>{{ item.appName }}</td>
+        <td>{{ item.packageName }}</td>
+        <td>{{ item.activityName }}</td>
       </tr>
     </tbody>
   </table>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+<script setup lang="ts">
+import { computed, onMounted, reactive, ref, defineProps, defineEmits, nextTick } from "vue";
+import { ResultData, ResultItem } from "../form/fetch";
+import emitter from "../mitt";
 
-export default defineComponent({
-  props: {
-    height: Number
-  },
-  computed: {
-    tbStyle() {
-      return `max-height: ${this.$props.height}px;`
-    }
-  },
-  setup(props, context) {
-    const rootRef = ref<HTMLTableElement | null>(null)
-    onMounted(() => {
-      context.emit('mounted', parseInt(getComputedStyle(document.body).height) - (rootRef.value as HTMLElement).offsetTop - 120)
-    })
+const rootRef = ref<HTMLTableElement | null>(null)
+let tableItems = reactive<ResultItem[]>([])
 
-    return {
-      rootRef
-    }
-  }
+const length = ref(0)
+
+const props = defineProps<{
+  height: number
+}>()
+
+const emits = defineEmits(['mounted'])
+
+const tbStyle = computed(() => {
+  return `max-height: ${props.height}px;`
 })
+
+emitter.on('update', async (e) => {
+  const data = await (e as ResultData)
+  const len = tableItems.length
+  tableItems.splice(0, len, ...data.items)
+  length.value = data.metadata.total
+  await nextTick()
+  emits('mounted', parseInt(getComputedStyle(document.body).height) - (rootRef?.value?.offsetTop as number) - 120)
+
+})
+
 </script>
 
 <style lang="scss" scoped>
@@ -65,6 +72,10 @@ export default defineComponent({
 
   thead tr {
     border: 0;
+
+    th {
+      user-select: none;
+    }
   }
 
   tr {
