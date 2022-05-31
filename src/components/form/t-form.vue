@@ -4,7 +4,7 @@
       <select ref="selectRef" v-model="currentType" @change="changeDisabled">
         <option v-for="item in searchType" :key="item.value" :value="item.value">{{ item.text }}</option>
       </select>
-      <input type="text" v-model="keyword" :required="!inputDisabled" :disabled="inputDisabled">
+      <input type="text" v-model="keyword" :required="!inputDisabled" :disabled="inputDisabled" :placeholder="currentPlaceholder" >
       <button class="btn" type="submit"><svg t="1653130909358" class="icon" viewBox="0 0 1024 1024" version="1.1"
           xmlns="http://www.w3.org/2000/svg" p-id="1458" width="16" height="16">
           <path
@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { getAll, getRegex, getSearch, getSignature } from './fetch';
 import emitter from '../mitt'
 
@@ -53,7 +53,13 @@ function changeDisabled() {
     inputDisabled.value = false
 }
 
-function debounce<T, K>(func: (...args: any[]) => T, delay = 300, immediate = true) {
+const currentPlaceholder = computed(() => {
+  return searchType.find((v) => {
+    return v.value === currentType.value
+  })?.placeholder
+})
+
+function debounce<T, K>(func: (...args: unknown[]) => T, delay = 300, immediate = true) {
   let timer = 0
   return function (this: K) {
     if (immediate && !timer) {
@@ -79,22 +85,22 @@ const handleSubmit = debounce<void, Event>(submitForm)
 function emitSearch() {
   emitter.emit('searched', ['搜索结果', searchType.find(val => {
         return +selectRef!.value!.value === val.value
-      })?.text, keyword.value])
+      })?.text.trim(), keyword.value])
 }
 
 function submitForm() {
   switch (currentType.value) {
     case 1:
       emitSearch()
-      emitter.emit('update', getSearch({q: keyword.value}))
+      emitter.emit('update', getSearch({q: encodeURIComponent(keyword.value.trim())}))
       break
     case 2:
       emitSearch()
-      emitter.emit('update', getRegex({regex: keyword.value}))
+      emitter.emit('update', getRegex({regex: encodeURIComponent(keyword.value.trim())}))
       break
     case 3:
       emitSearch()
-      emitter.emit('update', getSignature({signature: keyword.value}))
+      emitter.emit('update', getSignature({signature: encodeURIComponent(keyword.value.trim())}))
       break
     case 4:
       emitSearch()

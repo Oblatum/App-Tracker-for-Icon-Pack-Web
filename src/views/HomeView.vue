@@ -1,6 +1,11 @@
 <template>
   <div class="home">
-    <t-banner>两分钟时间，下载 Android 客户端帮助我们丰富数据库 Github 酷安 </t-banner>
+    <t-banner>两分钟时间，下载 Android 客户端帮助我们丰富数据库
+      <a
+        href="https://github.com/Oblatum/App-Tracker-for-Icon-Pack-Client-Side-Android-Version/releases/latest">Github</a>
+      <span>&nbsp;</span>
+      <a href="">酷安</a>
+    </t-banner>
     <t-heading class="heading">App Tracker For Icon Pack</t-heading>
     <t-form class="form" />
     <main class="main" v-loading="loading">
@@ -8,7 +13,7 @@
       <t-table @mounted="handleTable" :height="tableHeight" v-show="!loading" />
     </main>
   </div>
-  <footer class="footer">©{{ year }}-2022  Indusy   Oblatum  反馈群：868795356</footer>
+  <footer class="footer">©{{ year }}-2022 Indusy Oblatum 反馈群：868795356</footer>
 </template>
 
 <script lang="ts">
@@ -21,13 +26,14 @@ import TTable from "@/components/table/t-table.vue";
 import emitter from "@/components/mitt";
 import { ResultData } from "@/components/form/fetch";
 
+
 export default defineComponent({
   components: {
     TForm,
     THeading,
     TBanner,
     TBreadcrumb,
-    TTable
+    TTable,
   },
   data() {
     return {
@@ -45,9 +51,9 @@ export default defineComponent({
     const loading = ref(false)
     emitter.on('update', (val) => {
       loading.value = true
-      ;(val as Promise<ResultData>).then(() => {
-        loading.value = false
-      })
+        ; (val as Promise<ResultData>).then(() => {
+          loading.value = false
+        })
     })
     return {
       loading

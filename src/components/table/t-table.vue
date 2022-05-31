@@ -7,8 +7,12 @@
         <th>启动项</th>
       </tr>
     </thead>
-    <tbody :style="tbStyle">
-      <tr v-for="(item, index) in tableItems" :key="index">
+    <tbody class="relative left-0 top-0" :style="tbStyle" v-contextmenu="true">
+      <tr
+        v-for="(item, index) in tableItems"
+        :key="index"
+        :data-appid="item.id"
+      >
         <td>{{ item.appName }}</td>
         <td>{{ item.packageName }}</td>
         <td>{{ item.activityName }}</td>
@@ -18,9 +22,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, defineProps, defineEmits, nextTick } from "vue";
-import { ResultData, ResultItem } from "../form/fetch";
-import emitter from "../mitt";
+import {
+  computed,
+  reactive,
+  ref,
+  defineProps,
+  defineEmits,
+  nextTick,
+} from 'vue'
+import { ResultData, ResultItem } from '../form/fetch'
+import emitter from '../mitt'
 
 const rootRef = ref<HTMLTableElement | null>(null)
 let tableItems = reactive<ResultItem[]>([])
@@ -32,19 +43,22 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits(['mounted'])
-
 const tbStyle = computed(() => {
   return `max-height: ${props.height}px;`
 })
 
 emitter.on('update', async (e) => {
-  const data = await (e as ResultData)
+  const data = (await e) as ResultData
   const len = tableItems.length
   tableItems.splice(0, len, ...data.items)
   length.value = data.metadata.total
   await nextTick()
-  emits('mounted', parseInt(getComputedStyle(document.body).height) - (rootRef?.value?.offsetTop as number) - 120)
-
+  emits(
+    'mounted',
+    parseInt(getComputedStyle(document.body).height) -
+      (rootRef?.value?.offsetTop as number) -
+      120
+  )
 })
 
 </script>
@@ -52,10 +66,7 @@ emitter.on('update', async (e) => {
 <style lang="scss" scoped>
 .table {
   width: 100%;
-  box-shadow: 3px 3px #eb6565,
-    6px 6px #0d8f6e,
-    9px 9px #6666e4,
-    12px 12px #ddd,
+  box-shadow: 3px 3px #eb6565, 6px 6px #0d8f6e, 9px 9px #6666e4, 12px 12px #ddd,
     15px 15px #ddd;
   color: #3b3b3b;
 
@@ -68,6 +79,9 @@ emitter.on('update', async (e) => {
     display: block;
     width: 100%;
     overflow-y: auto;
+    position: relative;
+    left: 0;
+    top: 0;
   }
 
   thead tr {
@@ -85,18 +99,25 @@ emitter.on('update', async (e) => {
     border-collapse: collapse;
     border-bottom: 0.5px solid #b2b2b2;
     background-color: rgba(255, 255, 255, 0.507);
+    transition: all 1s;
 
-    &>td,
+    &.active {
+      background-color: rgba(255, 80, 139, 0.152);
+    }
+
+    & > td,
     th {
       display: table-cell;
       padding: 0.5rem 0.25rem;
       word-break: break-all;
       text-align: left;
       user-select: all;
-      font-family: "Fira Mono", "DejaVu Sans Mono", Menlo, Consolas, "Liberation Mono", Monaco, "Lucida Console", monospace;
+      font-family: 'Fira Mono', 'DejaVu Sans Mono', Menlo, Consolas,
+        'Liberation Mono', Monaco, 'Lucida Console', monospace;
     }
 
-    td {}
+    td {
+    }
   }
 }
 </style>

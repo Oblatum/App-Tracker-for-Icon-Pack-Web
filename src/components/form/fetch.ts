@@ -7,12 +7,12 @@ export interface ResultMeta {
 }
 
 export interface ResultItem {
-  activityName: string
-  appName: string
-  count: number
-  id: string
-  packageName: string
-  signature: string
+  activityName?: string
+  appName?: string
+  count?: number
+  id?: string
+  packageName?: string
+  signature?: string
 }
 
 export interface ResultData {
