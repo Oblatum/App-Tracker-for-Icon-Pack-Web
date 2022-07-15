@@ -1,14 +1,13 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import './registerServiceWorker'
+import { createApp } from 'vue';
+import App from './App.vue';
+import './assets/scss/index.scss';
+import { createPinia } from 'pinia';
 import router from './router'
-import store from './store'
-import '@/assets/scss/index.scss'
-import loadingDirective from '@/components/base/loading/directive'
-import contextMenuDirective from '@/components/base/contextMenu/directive'
-createApp(App)
-  .use(store)
-  .use(router)
-  .directive('loading', loadingDirective)
-  .directive('contextmenu', contextMenuDirective)
-  .mount('#app')
+import i18n from './locale';
+
+const pinia = createPinia();
+const app = createApp(App);
+app.use(pinia);
+app.use(i18n);
+app.use(router);
+app.mount('#app');
