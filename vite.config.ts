@@ -3,8 +3,9 @@ import vue from '@vitejs/plugin-vue';
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
-import {vueI18n} from '@intlify/vite-plugin-vue-i18n'
-import path from 'path'
+import { vueI18n } from '@intlify/vite-plugin-vue-i18n';
+
+import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -17,8 +18,8 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
     vueI18n({
-      include: path.resolve(__dirname, 'src/locale/**')
-    })
+      include: path.resolve(__dirname, 'src/locale/**'),
+    }),
   ],
   css: {
     preprocessorOptions: {
@@ -28,6 +29,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
-    }
-  }
+    },
+  },
 });

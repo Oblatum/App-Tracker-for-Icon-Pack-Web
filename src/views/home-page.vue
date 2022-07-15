@@ -5,8 +5,6 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div class="home">
-    dsdsads
-    {{ t('hello') }}
+  <div class="home" v-text="t('hello')">
   </div>
 </template>
