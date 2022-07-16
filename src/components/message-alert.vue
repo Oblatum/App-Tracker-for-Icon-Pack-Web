@@ -7,9 +7,10 @@
         >两分钟时间，下载 Android 客户端帮助我们丰富数据库
         <a
           href="https://github.com/Oblatum/App-Tracker-for-Icon-Pack-Client-Side-Android-Version/releases/latest"
+          target="_blank"
           >Github</a
         >
-        <a href="http://www.coolapk.com/apk/ren.imyan.app_tracker">酷安</a>
+        <a href="http://www.coolapk.com/apk/ren.imyan.app_tracker" target="_blank">酷安</a>
       </span>
     </template>
   </el-alert>

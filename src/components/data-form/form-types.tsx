@@ -2,39 +2,14 @@ import { defineComponent, PropType, ref } from 'vue';
 import { ElFormItem, ElInput } from 'element-plus';
 import { useI18n } from 'vue-i18n';
 
+export type DefaultFormType = 'default' | 'signature';
+
 export const defaultForm = defineComponent({
   props: {
-    placeholder: {
-      type: String as PropType<string>,
+    type: {
+      type: String as PropType<DefaultFormType>,
+      default: 'default',
     },
-    inputDisabled: {
-      type: Boolean as PropType<boolean>,
-    },
-  },
-  setup() {
-    const keywordInputValue = ref('');
-
-    return {
-      keywordInputValue,
-    };
-  },
-  render() {
-    return (
-      <>
-        <ElFormItem>
-          <ElInput
-            v-model={this.keywordInputValue}
-            placeholder={this.$props.placeholder}
-            disabled={this.$props.inputDisabled}
-          />
-        </ElFormItem>
-      </>
-    );
-  },
-});
-
-export const signatureForm = defineComponent({
-  props: {
     placeholder: {
       type: String as PropType<string>,
     },
@@ -50,7 +25,7 @@ export const signatureForm = defineComponent({
     return {
       keywordInputValue,
       signatureInputValue,
-      t
+      t,
     };
   },
   render() {
@@ -60,11 +35,17 @@ export const signatureForm = defineComponent({
           <ElInput
             v-model={this.keywordInputValue}
             placeholder={this.$props.placeholder}
+            disabled={this.inputDisabled}
           />
         </ElFormItem>
-        <ElFormItem>
-          <ElInput v-model={this.signatureInputValue} placeholder={ this.t('search_placeholder_default') } />
-        </ElFormItem>
+        {this.$props.type === 'default' ? null : (
+          <ElFormItem>
+            <ElInput
+              v-model={this.signatureInputValue}
+              placeholder={this.t('search_placeholder_sig')}
+            />
+          </ElFormItem>
+        )}
       </>
     );
   },

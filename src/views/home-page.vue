@@ -11,7 +11,7 @@ import DataForm from '@/components/data-form'
     <message-alert />
     <h-banner />
     <el-row>
-      <el-col :offset="4" :span="16">
+      <el-col :offset="2" :span="20">
         <data-form />
       </el-col>
     </el-row>

@@ -20,6 +20,7 @@ declare module '@vue/runtime-core' {
     ElSelect: typeof import('element-plus/es')['ElSelect']
     ElSpace: typeof import('element-plus/es')['ElSpace']
     ElSpacer: typeof import('element-plus/es')['ElSpacer']
+    FCopyright: typeof import('./src/components/f-copyright.vue')['default']
     HBanner: typeof import('./src/components/h-banner.vue')['default']
     LHeader: typeof import('./src/components/l-header.vue')['default']
     MessageAlert: typeof import('./src/components/message-alert.vue')['default']
