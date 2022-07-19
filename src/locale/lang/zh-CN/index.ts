@@ -11,5 +11,9 @@ export default {
   top_message: '两分钟时间，下载安卓客户端帮助我们丰富数据库',
   coolapk: '酷安',
   title_df: 'App Tracker For ',
-  title_ud: 'IconPack'
+  title_ud: 'IconPack',
+  search_result: '搜索结果',
+  app_name: '应用名',
+  package_name: '包名',
+  activity_name: '启动项'
 };

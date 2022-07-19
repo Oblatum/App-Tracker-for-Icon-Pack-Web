@@ -4,6 +4,8 @@ import { useI18n } from 'vue-i18n';
 import { Search } from '@element-plus/icons-vue';
 import { FormInstance } from 'element-plus';
 import { keySearch, regSearch, sigSearch, viewSearch } from '@/services';
+import { useStore } from '@/store';
+const store = useStore();
 const { t } = useI18n();
 
 type DefaultFormType = 'default' | 'signature';
@@ -65,24 +67,35 @@ const handleClickSubmit = (formEl: FormInstance) => {
       switch (selectedValue.value) {
         case 'search_opt_default':
           var res = await keySearch(form.keyword);
+          store.updateSearchOptions(
+            'search_opt_default',
+            res.data,
+            form.keyword
+          );
           console.log(res);
           break;
         case 'search_opt_regex':
           var res = await regSearch(form.keyword);
+          store.updateSearchOptions('search_opt_regex', res.data, form.keyword);
           console.log(res);
-          
+
           break;
         case 'search_opt_view':
           var res = await viewSearch();
+          store.updateSearchOptions('search_opt_view', res.data);
           console.log(res);
-          
+
           break;
         case 'search_opt_sig':
-          var res = await sigSearch(form.signature, form.keyword)
+          var res = await sigSearch(form.signature, form.keyword);
+          store.updateSearchOptions(
+            'search_opt_default',
+            res.data,
+            form.keyword,
+            form.signature
+          );
           console.log(res);
-          
-          break;
-        default:
+
           break;
       }
     }
@@ -91,7 +104,9 @@ const handleClickSubmit = (formEl: FormInstance) => {
 
 const selectedValue = ref('search_opt_default');
 const inputDisabled = ref(false);
-const ruleRequired = computed(() => selectedValue.value === 'search_opt_sig' || 'search_opt_view' ? false : true)
+const ruleRequired = computed(() =>
+  selectedValue.value === 'search_opt_sig' || 'search_opt_view' ? false : true
+);
 onMounted(() => {
   handleSelectionChange(selectedValue.value);
 });

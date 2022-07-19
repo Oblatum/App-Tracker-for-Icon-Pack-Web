@@ -11,5 +11,9 @@ export default {
   top_message: '2 minutes, download the Android client to help us enrich our database.',
   coolapk: 'Coolapk',
   title_df: 'App Tracker For ',
-  title_ud: 'IconPack'
+  title_ud: 'IconPack',
+  search_result: 'Search result',
+  app_name: 'App Name',
+  package_name: 'Package Name',
+  activity_name: 'Activity Name'
 };
