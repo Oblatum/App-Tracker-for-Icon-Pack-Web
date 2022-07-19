@@ -31,7 +31,7 @@ export async function viewSearch() {
   })
 }
 
-export async function sigSearch(q: string, sig: string) {
+export async function sigSearch(sig: string, q?: string) {
   return get(`/api/${sig}appInfo`, {
     params: {
       ...commonConfig,

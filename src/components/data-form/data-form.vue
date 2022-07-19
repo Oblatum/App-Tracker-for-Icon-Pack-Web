@@ -1,36 +1,44 @@
 <script lang="ts" setup>
-import { onMounted, reactive, ref, shallowRef } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { defaultForm, type DefaultFormType } from './form-types';
-import type { ElSelect } from 'element-plus';
 import { Search } from '@element-plus/icons-vue';
-import { log } from 'console';
+import { FormInstance } from 'element-plus';
+import { keySearch, regSearch, sigSearch, viewSearch } from '@/services';
 const { t } = useI18n();
 
+type DefaultFormType = 'default' | 'signature';
+
 const selectRef = ref(null);
-const currentPlaceholder = ref('');
+const currentPlaceholder = ref('search_placeholder_default');
 const currentFormType = ref<DefaultFormType>('default');
+
+const form = reactive({
+  keyword: '',
+  signature: '',
+});
+
+const formRef = ref(null);
 
 const opts = reactive([
   {
-    label: t('search_opt_default'),
+    label: 'search_opt_default',
     value: 'search_opt_default',
-    placeholder: t('search_placeholder_default'),
+    placeholder: 'search_placeholder_default',
   },
   {
-    label: t('search_opt_regex'),
+    label: 'search_opt_regex',
     value: 'search_opt_regex',
-    placeholder: t('search_placeholder_regex'),
+    placeholder: 'search_placeholder_regex',
   },
   {
-    label: t('search_opt_view'),
+    label: 'search_opt_view',
     value: 'search_opt_view',
-    placeholder: t('search_placeholder_view'),
+    placeholder: 'search_placeholder_view',
   },
   {
-    label: t('search_opt_sig'),
+    label: 'search_opt_sig',
     value: 'search_opt_sig',
-    placeholder: t('search_placeholder_default'),
+    placeholder: 'search_placeholder_default',
   },
 ]);
 
@@ -51,32 +59,65 @@ const handleSelectionChange = (value: string) => {
   }
 };
 
-const handleClickSubmit = () => {
-  
-}
-
-const submitForm = () => {
-  
-}
+const handleClickSubmit = (formEl: FormInstance) => {
+  formEl.validate(async (valid) => {
+    if (valid) {
+      switch (selectedValue.value) {
+        case 'search_opt_default':
+          var res = await keySearch(form.keyword);
+          console.log(res);
+          break;
+        case 'search_opt_regex':
+          var res = await regSearch(form.keyword);
+          console.log(res);
+          
+          break;
+        case 'search_opt_view':
+          var res = await viewSearch();
+          console.log(res);
+          
+          break;
+        case 'search_opt_sig':
+          var res = await sigSearch(form.signature, form.keyword)
+          console.log(res);
+          
+          break;
+        default:
+          break;
+      }
+    }
+  });
+};
 
 const selectedValue = ref('search_opt_default');
 const inputDisabled = ref(false);
+const ruleRequired = computed(() => selectedValue.value === 'search_opt_sig' || 'search_opt_view' ? false : true)
 onMounted(() => {
-  handleSelectionChange(
-    (selectRef.value as unknown as typeof ElSelect).selected.value
-  );
+  handleSelectionChange(selectedValue.value);
 });
 </script>
 
 <template>
-  <el-form>
+  <el-form :model="form" ref="formRef">
     <el-row>
       <el-col>
-        <default-form
-          :placeholder="currentPlaceholder"
-          :inputDisabled="inputDisabled"
-          :type="currentFormType"
-        />
+        <el-form-item prop="keyword" :rules="[{ required: ruleRequired }]">
+          <el-input
+            :placeholder="t(currentPlaceholder)"
+            :disabled="inputDisabled"
+            v-model="form.keyword"
+          />
+        </el-form-item>
+        <el-form-item
+          v-if="currentFormType === 'signature'"
+          prop="signature"
+          :rules="[{ required: true }]"
+        >
+          <el-input
+            :placeholder="t('search_placeholder_sig')"
+            v-model="form.signature"
+          />
+        </el-form-item>
       </el-col>
     </el-row>
     <el-row>
@@ -91,7 +132,7 @@ onMounted(() => {
             <el-option
               v-for="option in opts"
               :key="option.value"
-              :label="option.label"
+              :label="t(option.label)"
               :value="option.value"
             />
           </el-select>
@@ -99,7 +140,11 @@ onMounted(() => {
       </el-col>
       <el-col :span="2">
         <el-form-item>
-          <el-button class="submit" :icon="Search" @click="handleClickSubmit"></el-button>
+          <el-button
+            class="submit"
+            :icon="Search"
+            @click="handleClickSubmit(formRef!)"
+          ></el-button>
         </el-form-item>
       </el-col>
     </el-row>

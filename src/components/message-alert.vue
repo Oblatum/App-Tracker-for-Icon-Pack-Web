@@ -1,16 +1,23 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
+</script>
 
 <template>
   <el-alert type="success" center effect="dark">
     <template #title>
       <span class="alert"
-        >两分钟时间，下载 Android 客户端帮助我们丰富数据库
+        >{{ t('top_message') }}
         <a
           href="https://github.com/Oblatum/App-Tracker-for-Icon-Pack-Client-Side-Android-Version/releases/latest"
           target="_blank"
           >Github</a
         >
-        <a href="http://www.coolapk.com/apk/ren.imyan.app_tracker" target="_blank">酷安</a>
+        <a
+          href="http://www.coolapk.com/apk/ren.imyan.app_tracker"
+          target="_blank"
+          >{{ t('coolapk') }}</a
+        >
       </span>
     </template>
   </el-alert>

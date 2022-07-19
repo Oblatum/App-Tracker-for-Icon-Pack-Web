@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
+import LangSwitch from '@/components/lang-switch.vue'
 import MessageAlert from '@/components/message-alert.vue'
 import HBanner from '@/components/h-banner.vue'
 import DataForm from '@/components/data-form'
+import SearchHistory from '@/components/search-history.vue'
 
 </script>
 
@@ -15,7 +16,8 @@ import DataForm from '@/components/data-form'
         <data-form />
       </el-col>
     </el-row>
-
+    <search-history :data="['sousuo', 'bab']"/>
+    <lang-switch />
   </div>
 </template>
 
