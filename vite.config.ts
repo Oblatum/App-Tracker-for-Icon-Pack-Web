@@ -33,7 +33,7 @@ export default defineConfig(() => {
         filename: 'sw.ts',
         includeAssets: ['favicon.png', './src/*'],
         manifest: {
-          name: 'App Tracker For Icon Pack Web',
+          name: 'App Tracker For Icon Pack',
           short_name: 'App Trakcer',
           description: '为解决图标包/主题作者寻找包名困难的问题而生。',
           theme_color: '#504ebc',
