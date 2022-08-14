@@ -1,0 +1,21 @@
+dist
+public
+node_modules
+coverge
+CHANGELOG.en-us.md
+
+yarn
+pnpm
+npm
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+/src/assets
+/**/*.d.js
