@@ -4,8 +4,15 @@ import { ref } from 'vue';
 import { iconApi, searchApi } from './services/apis';
 printFeatures();
 
-const testData = ref<string>(null);
+const testData = ref<ItemModel[]>(null);
 const keyword = ref<string>('');
+
+interface ItemModel {
+  appName: string;
+  packageName: string;
+  activityName: string;
+  appId: string;
+}
 
 function search() {
   searchApi.search(keyword.value, 1).then(({ data }) => {
@@ -26,7 +33,7 @@ function loadIcon(evt: MouseEvent, packageName: string) {
     <h1>App Tracker For Iconpack</h1>
     <input v-model="keyword" type="text" />
     <button @click="search">搜索</button>
-    <div class="line" v-for="item in testData" :key="item">
+    <div class="line" v-for="(item, index) in testData" :key="index">
       <div class="app-name">{{ item.appName }}</div>
       <div class="package-name">{{ item.packageName }}</div>
       <div class="activity-name">{{ item.activityName }}</div>
