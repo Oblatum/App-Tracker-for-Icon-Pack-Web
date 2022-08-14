@@ -13,11 +13,20 @@
 ### 如何搭建 Web 端？
 
 ```shell
-$ yarn && yarn build-prod
+$ make API=API_URL
 ```
 
 ### 捐赠
 
 如果你先支持此项目，欢迎捐赠
 
-![捐赠](捐赠.jpg)
+[捐赠](https://pay.tql8.club/)
+
+
+### 开发计划
++ ✅ 简化部署
++ ◻️ 多主题
++ ◻️ docker
++ ◻️ 搜索结果排序
++ ◻️ 兼容移动端
++ ◻️ 国际化？

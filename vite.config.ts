@@ -1,19 +1,30 @@
-import { VitePWA } from "vite-plugin-pwa";
-import { defineConfig } from "vite";
-// import icon from "./src/favicon.png";
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import eslint from 'vite-plugin-eslint';
+import { VitePWA } from 'vite-plugin-pwa';
+import path from 'path';
+import stylelint from 'vite-plugin-stylelint';
+import { name, version } from './package.json';
 
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    vue(),
+    eslint(),
+    stylelint({
+      fix: true,
+      quiet: true,
+    }),
     VitePWA({
-      strategies: "injectManifest",
-      srcDir: "src",
-      filename: "sw.ts",
-      includeAssets: ["favicon.png", "./src/*"],
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
+      includeAssets: ['favicon.png', './src/*'],
       manifest: {
-        name: "App Tracker For Icon Pack Web",
-        short_name: "App Trakcer",
-        description: "为解决图标包/主题作者寻找包名困难的问题而生。",
-        theme_color: "#504ebc",
+        name: 'App Tracker For Icon Pack Web',
+        short_name: 'App Trakcer',
+        description: '为解决图标包/主题作者寻找包名困难的问题而生。',
+        theme_color: '#504ebc',
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -30,12 +41,30 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable',
-          }
+          },
         ],
-        start_url: "/",
-        background_color: "#504ebc",
-        display: "standalone",
+        start_url: '/',
+        background_color: '#504ebc',
+        display: 'standalone',
       },
     }),
   ],
+  define: {
+    __APP_ENV__: {
+      name,
+      version,
+    },
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+    },
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import '@/assets/scss/global.scss';`,
+      },
+    },
+  },
 });

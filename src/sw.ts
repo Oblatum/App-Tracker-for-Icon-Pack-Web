@@ -1,4 +1,4 @@
-import { precacheAndRoute } from "workbox-precaching";
+import { precacheAndRoute } from 'workbox-precaching';
 
 declare let self: ServiceWorkerGlobalScope;
 
