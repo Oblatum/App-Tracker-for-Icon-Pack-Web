@@ -13,8 +13,10 @@
     "lint": "npm run lint:eslint && npm run lint:stylelint"
   },
   "dependencies": {
+    "@types/mime": "^3.0.1",
     "@types/qs": "^6.9.7",
     "axios": "^0.27.2",
+    "mime": "^3.0.0",
     "pinia": "^2.0.18",
     "qs": "^6.11.0",
     "vh-check": "^2.0.5",

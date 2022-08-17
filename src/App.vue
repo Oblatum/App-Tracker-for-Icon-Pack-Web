@@ -1,18 +1,17 @@
 <script lang="ts" setup>
-import { printFeatures } from '@/helpers/utils';
 import { ref } from 'vue';
+import { downloadFile, printFeatures } from '@/helpers/utils';
 import { iconApi, searchApi } from './services/apis';
+import type { SearchItemModel } from '@/models/data';
+
+const loadingText = ref('loading');
 printFeatures();
+// downloadFile(
+//   ,
+// );
 
-const testData = ref<ItemModel[]>(null);
+const testData = ref<SearchItemModel[]>(null);
 const keyword = ref<string>('');
-
-interface ItemModel {
-  appName: string;
-  packageName: string;
-  activityName: string;
-  appId: string;
-}
 
 function search() {
   searchApi.search(keyword.value, 1).then(({ data }) => {
@@ -26,6 +25,11 @@ function loadIcon(evt: MouseEvent, packageName: string) {
     el.src = data.image;
   });
 }
+
+async function testDownload(packageName: string) {
+  const { data } = await iconApi.meta(packageName);
+  downloadFile(data.image, packageName);
+}
 </script>
 
 <template>
@@ -33,7 +37,12 @@ function loadIcon(evt: MouseEvent, packageName: string) {
     <h1>App Tracker For Iconpack</h1>
     <input v-model="keyword" type="text" />
     <button @click="search">搜索</button>
-    <div class="line" v-for="(item, index) in testData" :key="index">
+    <div
+      class="line"
+      v-loading:[loadingText]="true"
+      v-for="(item, index) in testData"
+      :key="index"
+    >
       <div class="app-name">{{ item.appName }}</div>
       <div class="package-name">{{ item.packageName }}</div>
       <div class="activity-name">{{ item.activityName }}</div>
@@ -42,6 +51,7 @@ function loadIcon(evt: MouseEvent, packageName: string) {
         @click="loadIcon($event, item.packageName)"
         src="@/assets/vue.svg"
       />
+      <button @click="testDownload(item.packageName)">下载图片</button>
     </div>
   </div>
 </template>
