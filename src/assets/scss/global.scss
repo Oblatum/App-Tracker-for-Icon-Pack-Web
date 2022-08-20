@@ -1,1 +1,11 @@
 @import "./variable.scss";
+
+.relative {
+  position: relative;
+}
+
+@for $size from 12 to 30 {
+  .fs-#{$size} {
+    font-size: $size+px !important;
+  }
+}

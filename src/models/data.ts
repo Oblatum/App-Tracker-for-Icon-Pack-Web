@@ -17,3 +17,9 @@ export interface SearchMetadataModel {
   per: number;
   total: number;
 }
+
+export interface IconMetaModel {
+  image: string;
+  name: string;
+  url: string;
+}
