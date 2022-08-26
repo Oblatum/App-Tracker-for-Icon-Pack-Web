@@ -1,5 +1,5 @@
 import { API_URL } from '@/constants/meta';
-import { IconMetaModel, SearchModel } from '@/models/data';
+import type { IconMetaModel, SearchModel } from '@/models/data';
 import { get } from './base';
 
 export const searchApi = {

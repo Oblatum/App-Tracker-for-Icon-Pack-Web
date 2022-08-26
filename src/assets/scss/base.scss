@@ -1,17 +1,21 @@
 :root {
-    --browser-address-bar: 0px;
+  --browser-address-bar: 0px;
 }
 
 html {
-    font-size: 62.5%;
-    box-sizing: border-box;
+  font-size: 62.5%;
+  box-sizing: border-box;
 }
+
 body {
-    width: 100vw;
-    min-height: $full-vh;
+  width: 100vw;
+  min-height: $full-vh;
+  background-color: antiquewhite;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
 }
+
 body,
 ul,
 ol {
-    margin: 0;
+  margin: 0;
 }
