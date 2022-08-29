@@ -21,6 +21,8 @@ export const searchApi = {
         per,
       },
     });
+
+    // TODO signature
   },
 
   view(page: number, per = 10) {

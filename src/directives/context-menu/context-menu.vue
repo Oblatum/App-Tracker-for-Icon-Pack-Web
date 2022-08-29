@@ -89,6 +89,47 @@ defineExpose({
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
     sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 
+  &.left-top {
+    &::after {
+      left: 0;
+      top: 0;
+      clip-path: polygon(100% 0, 0 0, 0 100%);
+    }
+  }
+
+  &.left-bottom {
+    &::after {
+      left: 0;
+      bottom: 0;
+      clip-path: polygon(0 0, 0 100%, 100% 100%);
+    }
+  }
+
+  &.right-top {
+    &::after {
+      right: 0;
+      top: 0;
+      clip-path: polygon(0 0, 100% 100%, 100% 0);
+    }
+  }
+
+  &.right-bottom {
+    &::after {
+      right: 0;
+      bottom: 0;
+      clip-path: polygon(0 100%, 100% 0, 100% 100%);
+    }
+  }
+
+  &::after {
+    display: block;
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background-color: #4b57ff;
+  }
+
   &-group {
     &-title {
       padding: 6px 6px;

@@ -2,6 +2,7 @@ import type {
   ListDataInfoRecordModel,
   ListDataRecordModel,
 } from '@/components/item-list/model';
+import { appendEl, preventDefault, removeEl } from '@/helpers/dom';
 import { createApp, Directive, DirectiveBinding } from 'vue';
 import ContextMenu from './context-menu.vue';
 import type { ElPosModel } from './model';
@@ -11,10 +12,10 @@ const contextMenu: Directive = {
     const app = createApp(ContextMenu);
     const instance = app.mount(document.createElement('div'));
     el.instance = instance;
-    if (binding.value) {
-      activate(instance.$el, instance, binding, {
-        x: 0,
-        y: 0,
+    if (binding.value.target) {
+      activate(el, instance, binding, {
+        x: binding.value.x,
+        y: binding.value.y,
         origin: 'left top',
       });
     } else {
@@ -23,11 +24,11 @@ const contextMenu: Directive = {
   },
 
   updated(el, binding) {
-    if (binding.value) {
-      activate(el.instance.$el, el.instance, binding, {
-        x: 0,
-        y: 0,
-        origin: 'left top',
+    if (binding.value.target) {
+      activate(el, el.instance, binding, {
+        x: binding.value.x,
+        y: binding.value.y,
+        origin: binding.value.origin,
       });
     } else {
       deactivate(el.instance.$el);
@@ -41,29 +42,44 @@ const contextMenu: Directive = {
 
 function activate(
   el: HTMLElement,
-  instance: unknown,
+  instance: any,
   binding: DirectiveBinding,
   { x, y, origin }: ElPosModel,
 ) {
-  // TODO 设置上下文菜单位置
-  appendEl(el);
-  setTransformOrigin(el, origin);
-  playEnterAnimation(el);
-  (instance as any).setData(
+  setPos(instance.$el, x, y);
+  appendEl(instance.$el, el);
+  if (!matchPosition(el)) {
+    el.classList.add('relative');
+  }
+  setTransformOrigin(instance.$el, origin);
+  playEnterAnimation(instance.$el);
+  instance.setData(
     matchItem(
-      (binding.value as HTMLElement).dataset.appId,
+      (binding.value.target as HTMLElement).dataset.appId,
       binding.arg as unknown as ListDataRecordModel[],
     ),
   );
-  el.addEventListener('click', handleItemClick);
-  el.addEventListener('contextmenu', preventDefault);
-  addCtxBlurHandler(el, binding);
+  instance.$el.addEventListener('click', handleItemClick);
+  instance.$el.addEventListener('contextmenu', preventDefault);
+  addCtxBlurHandler(instance.$el, binding);
 }
 
 async function deactivate(el: HTMLElement) {
   await playLeaveAnimation(el);
   el.removeEventListener('contextmenu', preventDefault);
-  removeEl(el);
+  removeEl(el, el.parentElement);
+}
+
+function matchPosition(el: HTMLElement) {
+  return ~['relative', 'absolute', 'fixed'].indexOf(
+    getComputedStyle(el).position,
+  );
+}
+
+function setPos(el: HTMLElement, x: number, y: number) {
+  el.style.position = 'absolute';
+  el.style.left = `${x}px`;
+  el.style.top = `${y}px`;
 }
 
 function handleItemClick(evt: MouseEvent) {
@@ -78,28 +94,15 @@ function handleItemClick(evt: MouseEvent) {
   else evt.preventDefault();
 }
 
-function addCtxBlurHandler(el: Element, binding: DirectiveBinding) {
+function addCtxBlurHandler(el: HTMLElement, binding: DirectiveBinding) {
   const handleCtxBlur = function () {
-    el.removeEventListener('click', handleCtxBlur);
+    document.removeEventListener('click', handleCtxBlur);
     const { setCurrCtx } = binding.instance as any;
     setCurrCtx(new Event('click'));
-    deactivate(el as HTMLElement);
+    deactivate(el);
   };
-  el.removeEventListener('click', handleCtxBlur);
+  document.removeEventListener('click', handleCtxBlur);
   document.addEventListener('click', handleCtxBlur, { capture: false });
-}
-
-function appendEl(el: HTMLElement) {
-  document.body.appendChild(el);
-}
-
-function removeEl(el: HTMLElement) {
-  if (Array.prototype.find.call(document.body.children, (v) => v === el))
-    document.body.removeChild(el);
-}
-
-function preventDefault(evt: Event) {
-  evt.preventDefault();
 }
 
 function matchItem(
@@ -125,15 +128,11 @@ const enterTiming = {
   easing: 'ease-in-out',
 };
 
-function setTransformOrigin(
-  el: HTMLElement,
-  origin: [number, number] | string,
-) {
-  if (typeof origin === 'string') {
-    el.style.transformOrigin = origin;
-  } else {
-    el.style.transformOrigin = origin.map((v) => v + 'px').join(' ');
-  }
+function setTransformOrigin(el: HTMLElement, origin: string) {
+  el.style.transformOrigin = origin;
+  el.className = '';
+  el.classList.add(`${origin.replace(' ', '-')}`);
+  el.classList.add(`context-menu`);
 }
 
 async function playEnterAnimation(el: HTMLElement) {

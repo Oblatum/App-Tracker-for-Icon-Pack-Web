@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onUnmounted, ref, watch } from 'vue';
 
 const title = ref<string>('');
 const emphasis = ref<string>('');
-const interval = ref<ReturnType<typeof setInterval>>();
+const interval = ref<ReturnType<typeof setInterval>>(null);
 
 function setTitle(tt: string) {
   title.value = tt;
 }
 
-onMounted(() => {
+watch(title, () => {
   if (title.value) {
     interval.value = setInterval(() => {
       if (emphasis.value.length < 3) {
@@ -17,7 +17,9 @@ onMounted(() => {
       } else {
         emphasis.value = '';
       }
-    }, 250);
+    }, 300);
+  } else {
+    interval.value = null;
   }
 });
 
@@ -42,12 +44,15 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .loading-container {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
+  z-index: 100;
 
   .loading-text {
+    font-size: 30px;
+    font-weight: 900;
     &::after {
       content: attr(data-emphasis);
     }

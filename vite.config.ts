@@ -11,6 +11,10 @@ import { name, version } from './package.json';
 export default defineConfig(() => {
   return {
     base: './',
+    server: {
+      port: 5173,
+      open: true,
+    },
     plugins: [
       vue(),
       eslint(),

@@ -18,5 +18,5 @@ export interface ContextMenuConfModel {
 export interface ElPosModel {
   x: number;
   y: number;
-  origin: [number, number] | string;
+  origin: string;
 }

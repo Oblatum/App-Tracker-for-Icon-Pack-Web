@@ -4,7 +4,7 @@ import vhCheck from 'vh-check';
 
 import '@/assets/scss/index.scss';
 import App from './App.vue';
-import loadingDirective from './directives/loading';
+import loadingDirective from './directives/loading/directive';
 import contextMenuDirective from './directives/context-menu/directive';
 
 const pinia = createPinia();

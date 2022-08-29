@@ -7,7 +7,26 @@ const props = defineProps<{
   items: SearchItemModel[];
 }>();
 
-const currCtx = ref(null);
+const listRef = ref<HTMLElement>(null);
+const menuWidth = 150;
+const menuHeight = 199.5;
+
+const validArea = computed(() => {
+  return {
+    width: listRef.value.clientWidth,
+    height: listRef.value.clientHeight,
+  };
+});
+
+const initConf = {
+  target: null as any,
+  x: 0,
+  y: 0,
+  origin: 'left top',
+};
+
+const currCtxConf = ref(Object.assign({}, initConf));
+
 const listData = computed<ListDataRecordModel[]>(() => {
   return props.items.map((v) => {
     return {
@@ -24,11 +43,39 @@ const listData = computed<ListDataRecordModel[]>(() => {
 });
 
 function setCurrCtx(evt: MouseEvent) {
-  currCtx.value = null;
-  currCtx.value = evt
+  const target = evt
     .composedPath()
     .filter((v) => v !== window && v !== document)
-    .find((v) => (v as HTMLElement).classList.contains('item-row'));
+    .find((v) =>
+      (v as HTMLElement).classList.contains('item-row'),
+    ) as HTMLElement;
+
+  if (target) {
+    let origin = [];
+    let x = listRef.value.scrollLeft + (evt as any).layerX;
+    let y = listRef.value.scrollTop + (evt as any).layerY;
+    if (x + menuWidth > validArea.value.width) {
+      x -= menuWidth;
+      origin.push('right');
+    } else {
+      origin.push('left');
+    }
+
+    if (y + menuHeight > validArea.value.height) {
+      y -= menuHeight;
+      origin.push('bottom');
+    } else {
+      origin.push('top');
+    }
+    currCtxConf.value = {
+      target,
+      x,
+      y,
+      origin: origin.join(' '),
+    };
+  } else {
+    currCtxConf.value = Object.assign({}, initConf);
+  }
 }
 
 defineExpose({ setCurrCtx });
@@ -36,7 +83,8 @@ defineExpose({ setCurrCtx });
 
 <template>
   <div
-    v-context-menu:[listData]="currCtx"
+    ref="listRef"
+    v-context-menu:[listData]="currCtxConf"
     @contextmenu.prevent="setCurrCtx"
     class="item-list"
   >
@@ -57,6 +105,8 @@ defineExpose({ setCurrCtx });
 .item-list {
   width: 100%;
   box-sizing: border-box;
+  overflow: hidden;
+
   .item-row {
     display: flex;
     flex-direction: row;
@@ -64,9 +114,11 @@ defineExpose({ setCurrCtx });
     box-sizing: border-box;
     border-radius: 20px;
     transition: transform 0.5s, background-color 0.5s;
+    cursor: pointer;
 
     // &:hover {
     //   background-color: rgb(230, 230, 230);
+    //   position: relative;
     //   transform: scale(1.005) translate(2px, 2px);
     // }
 
