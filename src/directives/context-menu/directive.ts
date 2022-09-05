@@ -137,10 +137,7 @@ function setTransformOrigin(el: HTMLElement, origin: string) {
 
 async function playEnterAnimation(el: HTMLElement) {
   return new Promise<void>((resolve) => {
-    const enteringUI = el.animate(enterAnimationKeyframes, enterTiming);
-    enteringUI.onfinish = () => {
-      resolve();
-    };
+    el.animate(enterAnimationKeyframes, enterTiming).onfinish = resolve as any;
   });
 }
 
@@ -160,10 +157,8 @@ const leaveAnimationTiming = {
 
 async function playLeaveAnimation(el: HTMLElement) {
   return new Promise<void>((resolve) => {
-    const leavingUI = el.animate(leaveAnimationKeyframes, leaveAnimationTiming);
-    leavingUI.onfinish = () => {
-      resolve();
-    };
+    el.animate(leaveAnimationKeyframes, leaveAnimationTiming).onfinish =
+      resolve as any;
   });
 }
 

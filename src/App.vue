@@ -1,15 +1,37 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 import ItemList from '@/components/item-list/item-list.vue';
 import DataPagination from '@/components/data-pagination/data-pagination.vue';
+import TypeSelect from './components/type-select/type-select.vue';
 import InputBox from './components/input-box/input-box.vue';
 import { searchApi } from './services/apis';
 import type { SearchItemModel } from './models/data';
+import { messageAlert } from './components/message-box/message-box';
 
 const data = ref<SearchItemModel[]>([]);
 const kw = ref('');
 const loadingText = ref('loading');
 const loading = ref(false);
+const typeSelectCnf = [
+  {
+    value: 'keyword',
+    label: '关键词',
+  },
+  {
+    value: 'regexp',
+    label: '正则表达式',
+  },
+  {
+    value: 'view',
+    label: '浏览全部',
+  },
+  {
+    value: 'signature',
+    label: '签名搜索',
+  },
+];
+
+const searchType = ref(typeSelectCnf[0].value);
 
 async function handleSearch(kw: string) {
   loading.value = true;
@@ -23,6 +45,7 @@ async function handleSearch(kw: string) {
   <div class="test">
     <h1>App Tracker For Iconpack!</h1>
     <div class="form">
+      <type-select v-model="searchType" :options="typeSelectCnf" />
       <input-box
         v-model="kw"
         @enter="handleSearch(kw)"
@@ -36,6 +59,9 @@ async function handleSearch(kw: string) {
     <item-list v-if="!loading && data.length" :items="data" class="res-list" />
   </div>
   <data-pagination />
+  <button @click="messageAlert(h('h1', null, h('a', null, '有内鬼')))">
+    弹出消息
+  </button>
 </template>
 
 <style lang="scss" scoped>

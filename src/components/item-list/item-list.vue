@@ -113,14 +113,13 @@ defineExpose({ setCurrCtx });
     padding: 10px;
     box-sizing: border-box;
     border-radius: 20px;
-    transition: transform 0.5s, background-color 0.5s;
+    transition: transform 0.5s, box-shadow 0.25s;
     cursor: pointer;
 
-    // &:hover {
-    //   background-color: rgb(230, 230, 230);
-    //   position: relative;
-    //   transform: scale(1.005) translate(2px, 2px);
-    // }
+    &:hover {
+      // background-color: rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    }
 
     .item {
       flex-basis: 100px;
