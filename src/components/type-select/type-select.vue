@@ -110,12 +110,13 @@ function collapse() {
     border-radius: inherit;
     transition: all 1s;
     overflow: hidden;
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.1);
 
     .option {
       padding: 5px 0;
       &:hover {
-        color: #ffffff;
-        background-color: #5763ff;
+        color: #4b57ff;
+        background-color: #e1e5ff;
       }
     }
     z-index: 999999;

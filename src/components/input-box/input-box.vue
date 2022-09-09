@@ -2,6 +2,8 @@
 defineProps<{
   placeholder?: string;
   modelValue: string;
+  disabled: boolean;
+  required?: boolean;
 }>();
 
 defineEmits(['update:modelValue', 'enter']);
@@ -14,6 +16,8 @@ defineEmits(['update:modelValue', 'enter']);
       @keypress.enter="$emit('enter')"
       @input="(e) => $emit('update:modelValue', (e.target as HTMLInputElement).value)"
       :placeholder="placeholder"
+      :disabled="disabled"
+      :required="required"
       type="text"
     />
   </div>
@@ -40,6 +44,10 @@ defineEmits(['update:modelValue', 'enter']);
 
     &::placeholder {
       color: #848297;
+    }
+
+    &[disabled] {
+      text-decoration: line-through;
     }
   }
 }

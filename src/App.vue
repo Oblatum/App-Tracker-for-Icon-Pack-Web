@@ -1,17 +1,22 @@
 <script lang="ts" setup>
-import { h, ref } from 'vue';
+import { computed, h, onMounted, ref } from 'vue';
 import ItemList from '@/components/item-list/item-list.vue';
 import DataPagination from '@/components/data-pagination/data-pagination.vue';
 import TypeSelect from './components/type-select/type-select.vue';
 import InputBox from './components/input-box/input-box.vue';
 import { searchApi } from './services/apis';
 import type { SearchItemModel } from './models/data';
-import { messageAlert } from './components/message-box/message-box';
+import { debounce } from 'lodash-es';
 
 const data = ref<SearchItemModel[]>([]);
 const kw = ref('');
+const itemListWrapRef = ref<HTMLElement>(null);
+
+const vh = ref(document.documentElement.clientHeight);
+const listOffsetTop = ref(0);
 const loadingText = ref('loading');
 const loading = ref(false);
+const listHeight = computed(() => vh.value - listOffsetTop.value - 50);
 const typeSelectCnf: {
   value: keyof typeof searchApi;
   label: string;
@@ -36,6 +41,19 @@ const typeSelectCnf: {
 
 const searchType = ref(typeSelectCnf[0].value);
 
+function setResizeListener() {
+  window.onresize = debounce(
+    () => {
+      listOffsetTop.value = itemListWrapRef.value?.offsetTop;
+      vh.value = document.documentElement.clientHeight;
+    },
+    300,
+    {
+      trailing: true,
+    },
+  );
+}
+
 async function handleSearch(kw: string) {
   loading.value = true;
   let items = {} as SearchItemModel[];
@@ -49,18 +67,24 @@ async function handleSearch(kw: string) {
     case 'view':
       items = (await searchApi.view(1, 30)).data.items;
       break;
-    // case 'signature':
-    //   break;
+    case 'signature':
+      items = (await searchApi.signature(kw, 30)).data.items;
+      break;
     default:
       break;
   }
   data.value = items;
   loading.value = false;
 }
+
+onMounted(() => {
+  listOffsetTop.value = itemListWrapRef.value.offsetTop;
+  setResizeListener();
+});
 </script>
 
 <template>
-  <div class="test">
+  <div class="main-content">
     <h1 class="app-title">App Tracker For Iconpack!</h1>
     <div class="form">
       <type-select
@@ -71,33 +95,55 @@ async function handleSearch(kw: string) {
       <input-box
         v-model="kw"
         @enter="handleSearch(kw)"
-        placeholder="Keyword"
+        :placeholder="searchType"
+        :disabled="searchType === 'view'"
         type="text"
       />
       <button class="submit-btn" @click="handleSearch(kw)">搜索</button>
     </div>
   </div>
-  <div class="list-wrapper" v-loading:[loadingText]="loading">
-    <item-list v-if="!loading && data.length" :items="data" class="res-list" />
+  <div
+    ref="itemListWrapRef"
+    class="list-wrapper"
+    v-loading:[loadingText]="loading"
+  >
+    <item-list
+      v-if="!loading && data.length"
+      :style="{ height: `${listHeight}px` }"
+      :items="data"
+      class="res-list"
+    />
   </div>
   <data-pagination />
-  <button @click="messageAlert(h('h1', null, h('a', null, '哈哈')))">
+  <!-- <button @click="messageAlert(h('h1', null, h('a', null, '哈哈')))">
     弹出消息
-  </button>
-  <footer>©2022-2022&nbsp;Indusy&nbsp;Oblatum&nbsp;反馈群：868795356</footer>
+  </button> -->
+  <footer class="footer">
+    <span class="footer-split">
+      ©2022-2022 Indusy
+      <a href="https://github.com/Oblatum/App-Tracker-for-Icon-Pack-Web">
+        Oblatum
+      </a>
+    </span>
+    <span class="footer-split">
+      App 下载
+      <a href="">酷安</a>
+      <a href="">Github</a>
+    </span>
+    <span class="footer-split">反馈群：868795356</span>
+  </footer>
 </template>
 
 <style lang="scss" scoped>
-.test {
+.main-content {
   display: flex;
   justify-content: center;
   flex-direction: column;
-  h1 {
-    font-size: 30px;
-    text-align: center;
-  }
 
   .app-title {
+    font-size: 30px;
+    text-align: center;
+    text-shadow: 2px 2px rgba(0, 0, 0, 0.1);
     color: #6f79ff;
   }
 
@@ -123,10 +169,21 @@ async function handleSearch(kw: string) {
 
 .list-wrapper {
   box-sizing: border-box;
-  padding: 10px;
-  .res-list {
-    max-height: calc(100vh - 180px);
-    // background-color: rgb(250, 249, 255);
+  padding: 10px 20px;
+}
+.footer {
+  width: 100%;
+  text-align: center;
+  .footer-split {
+    margin-right: 10px;
+    a {
+      color: #4955fc;
+      padding: 0 2px;
+    }
+
+    &:nth-last-child(1) {
+      margin: unset;
+    }
   }
 }
 </style>

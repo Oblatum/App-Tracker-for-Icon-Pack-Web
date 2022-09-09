@@ -7,14 +7,16 @@ const props = defineProps<{
   items: SearchItemModel[];
 }>();
 
-const listRef = ref<HTMLElement>(null);
-const menuWidth = 150;
-const menuHeight = 199.5;
+const overflowScroll = ref(true);
+
+const listBodyRef = ref<HTMLElement>(null);
+const menuWidth = 120;
+const menuHeight = 167;
 
 const validArea = computed(() => {
   return {
-    width: listRef.value.clientWidth,
-    height: listRef.value.clientHeight,
+    width: listBodyRef.value.clientWidth,
+    height: listBodyRef.value.clientHeight,
   };
 });
 
@@ -56,8 +58,8 @@ function setCurrCtx(evt: MouseEvent) {
 
   if (target) {
     let origin = [];
-    let x = listRef.value.scrollLeft + (evt as any).layerX;
-    let y = listRef.value.scrollTop + (evt as any).layerY;
+    let x = listBodyRef.value.scrollLeft + (evt as any).layerX;
+    let y = listBodyRef.value.scrollTop + (evt as any).layerY;
     if (x + menuWidth > validArea.value.width) {
       x -= menuWidth;
       origin.push('right');
@@ -66,8 +68,13 @@ function setCurrCtx(evt: MouseEvent) {
     }
 
     if (y + menuHeight > validArea.value.height) {
-      y -= menuHeight;
-      origin.push('bottom');
+      if (y + menuHeight > document.body.clientHeight) {
+        y -= menuHeight;
+        origin.push('bottom');
+      } else {
+        origin.push('top');
+        overflowScroll.value = false;
+      }
     } else {
       origin.push('top');
     }
@@ -90,9 +97,11 @@ defineExpose({ setCurrCtx });
 </script>
 
 <template>
-  <div class="item-list">
+  <div
+    :style="{ overflowY: overflowScroll ? 'auto' : 'unset' }"
+    class="item-list"
+  >
     <table
-      ref="listRef"
       v-context-menu:[listData]="currCtxConf"
       @contextmenu.prevent="setCurrCtx"
       class="item-list-table"
@@ -104,7 +113,7 @@ defineExpose({ setCurrCtx });
           <th class="item">启动项</th>
         </tr>
       </thead>
-      <tbody class="list-body">
+      <tbody ref="listBodyRef" class="list-body">
         <tr
           v-for="(item, index) in items"
           :key="index"
@@ -122,8 +131,6 @@ defineExpose({ setCurrCtx });
 
 <style lang="scss" scoped>
 .item-list {
-  overflow: hidden;
-  overflow-y: scroll;
   box-sizing: border-box;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
   .item-list-table {

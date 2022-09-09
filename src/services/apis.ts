@@ -21,12 +21,19 @@ export const searchApi = {
         per,
       },
     });
-
-    // TODO signature
   },
 
   view(page: number, per = 10) {
     return get<SearchModel>(`${API_URL}/api/appInfo`, {
+      params: {
+        page,
+        per,
+      },
+    });
+  },
+
+  signature(signature: string, page: number, per = 10) {
+    return get<SearchModel>(`${API_URL}/api/appInfo/${signature}`, {
       params: {
         page,
         per,

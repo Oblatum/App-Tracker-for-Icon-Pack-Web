@@ -1,6 +1,10 @@
+import { Component } from 'vue';
+
 export interface ContextMenuConfBaseRecordModel {
-  label: string;
-  action: (...args: any[]) => void;
+  label: string | Component;
+  binding?: any;
+  onclick?: (...args: any[]) => void;
+  type?: 'default' | 'custom';
 }
 
 export interface ContextMenuConfGroupRecordModel {

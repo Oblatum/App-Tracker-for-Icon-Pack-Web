@@ -19,7 +19,7 @@ const contextMenu: Directive = {
         origin: 'left top',
       });
     } else {
-      deactivate(el.instance.$el);
+      deactivate(el.instance.$el, binding);
     }
   },
 
@@ -36,7 +36,7 @@ const contextMenu: Directive = {
   },
 
   unmounted(el, binding) {
-    deactivate(el.instance.$el);
+    deactivate(el.instance.$el, binding);
   },
 };
 
@@ -59,15 +59,23 @@ function activate(
       binding.arg as unknown as ListDataRecordModel[],
     ),
   );
-  instance.$el.addEventListener('click', handleItemClick);
+  instance.$el.addEventListener('click', (evt: MouseEvent) =>
+    handleItemClick(evt, binding),
+  );
   instance.$el.addEventListener('contextmenu', preventDefault);
+  window.addEventListener('resize', () =>
+    (binding.instance as any).setCurrCtx(new Event('click')),
+  );
   addCtxBlurHandler(instance.$el, binding);
 }
 
-async function deactivate(el: HTMLElement) {
+export async function deactivate(el: HTMLElement, binding?: DirectiveBinding) {
   await playLeaveAnimation(el);
   el.removeEventListener('contextmenu', preventDefault);
   removeEl(el, el.parentElement);
+  if (binding) {
+    (binding.instance as any).setCurrCtx(new Event('click'));
+  }
 }
 
 function matchPosition(el: HTMLElement) {
@@ -82,15 +90,16 @@ function setPos(el: HTMLElement, x: number, y: number) {
   el.style.top = `${y}px`;
 }
 
-function handleItemClick(evt: MouseEvent) {
+function handleItemClick(evt: MouseEvent, binding: DirectiveBinding) {
   evt.stopPropagation();
-  if (
-    evt
-      .composedPath()
-      .filter((v) => v !== window && v !== document)
-      .find((v) => (v as HTMLElement).classList.contains('context-menu-item'))
-  )
-    deactivate(evt.currentTarget as HTMLElement);
+  const target = evt
+    .composedPath()
+    .filter((v) => v !== window && v !== document)
+    .find((v) =>
+      (v as HTMLElement).classList.contains('context-menu-item'),
+    ) as HTMLElement;
+  if (target && target.getAttribute('type') !== 'custom')
+    deactivate(evt.currentTarget as HTMLElement, binding);
   else evt.preventDefault();
 }
 

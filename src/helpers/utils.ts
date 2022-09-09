@@ -18,6 +18,7 @@ export const { log, info, warn, error } = console;
 export async function downloadFile(url: string, name?: string) {
   try {
     const { data, headers } = await get(url, {
+      baseURL: null,
       responseType: 'blob',
     });
     const ext = mime.getExtension(headers['content-type']) || '';
