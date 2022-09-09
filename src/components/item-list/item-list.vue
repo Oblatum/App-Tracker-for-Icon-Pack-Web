@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { SearchItemModel } from '@/models/data';
 import type { ListDataRecordModel } from './model';
-import { computed, ref } from 'vue';
+import { computed, onUpdated, ref } from 'vue';
 
 const props = defineProps<{
   items: SearchItemModel[];
@@ -43,11 +43,15 @@ const listData = computed<ListDataRecordModel[]>(() => {
 });
 
 function setCurrCtx(evt: MouseEvent) {
+  currCtxConf.value.target?.classList.remove('active-item-row');
+
   const target = evt
     .composedPath()
     .filter((v) => v !== window && v !== document)
-    .find((v) =>
-      (v as HTMLElement).classList.contains('item-row'),
+    .find(
+      (v) =>
+        (v as HTMLElement).classList.contains('item-row') &&
+        !(v as HTMLElement).classList.contains('item-title-row'),
     ) as HTMLElement;
 
   if (target) {
@@ -78,56 +82,116 @@ function setCurrCtx(evt: MouseEvent) {
   }
 }
 
+onUpdated(() => {
+  currCtxConf.value.target?.classList.add('active-item-row');
+});
+
 defineExpose({ setCurrCtx });
 </script>
 
 <template>
-  <div
-    ref="listRef"
-    v-context-menu:[listData]="currCtxConf"
-    @contextmenu.prevent="setCurrCtx"
-    class="item-list"
-  >
-    <div
-      v-for="(item, index) in items"
-      :key="index"
-      class="item-row"
-      :data-app-id="item.id"
+  <div class="item-list">
+    <table
+      ref="listRef"
+      v-context-menu:[listData]="currCtxConf"
+      @contextmenu.prevent="setCurrCtx"
+      class="item-list-table"
     >
-      <div class="item">{{ item.appName }}</div>
-      <div class="item">{{ item.packageName }}</div>
-      <div class="item">{{ item.activityName }}</div>
-    </div>
+      <thead class="list-head">
+        <tr class="item-title-row">
+          <th class="item">应用名</th>
+          <th class="item">包名</th>
+          <th class="item">启动项</th>
+        </tr>
+      </thead>
+      <tbody class="list-body">
+        <tr
+          v-for="(item, index) in items"
+          :key="index"
+          class="item-row"
+          :data-app-id="item.id"
+        >
+          <td class="item">{{ item.appName }}</td>
+          <td class="item">{{ item.packageName }}</td>
+          <td class="item">{{ item.activityName }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .item-list {
-  width: 100%;
-  box-sizing: border-box;
   overflow: hidden;
-
-  .item-row {
-    display: flex;
-    flex-direction: row;
-    padding: 10px;
+  overflow-y: scroll;
+  box-sizing: border-box;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
+  .item-list-table {
+    width: 100%;
     box-sizing: border-box;
-    border-radius: 20px;
-    transition: transform 0.5s, box-shadow 0.25s;
-    cursor: pointer;
+    position: relative;
+    box-sizing: border-box;
+    table-layout: fixed;
+    border-collapse: collapse;
 
-    &:hover {
-      // background-color: rgba(0, 0, 0, 0.2);
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    .row-base {
+      padding: 10px;
+      box-sizing: border-box;
+      cursor: pointer;
     }
 
-    .item {
-      flex-basis: 100px;
-      flex-grow: 1;
-      flex-shrink: 1;
+    .item-base {
       font-family: Noto Sans SC;
       font-size: 16px;
-      color: #1a202c;
+      line-height: 1.5;
+      padding: 5px 0;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    .list-head {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      transform: translateZ(0px);
+      box-shadow: 0 0.5px 2px rgba(0, 0, 0, 0.1);
+
+      .item-title-row {
+        @extend .row-base;
+        background-color: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(2px);
+        width: 100%;
+
+        .item {
+          @extend .item-base;
+          font-weight: bolder;
+          padding: 10px 0;
+        }
+      }
+    }
+
+    .item-row {
+      @extend .row-base;
+      &:hover,
+      &.active-item-row {
+        .item {
+          color: #f80057;
+          text-shadow: 1px 1px #f80057;
+        }
+      }
+
+      .item {
+        @extend .item-base;
+        font-family: 'Fira Mono', 'DejaVu Sans Mono', Menlo, Consolas,
+          'Liberation Mono', Monaco, 'Lucida Console', monospace;
+        color: #363c82;
+        transition: color 0.25s, text-shadow 0.25s;
+        word-break: break-all;
+
+        &:nth-child(1) {
+          width: 100px;
+        }
+      }
     }
   }
 }

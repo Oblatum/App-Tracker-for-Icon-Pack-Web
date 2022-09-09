@@ -3,7 +3,7 @@ import type { IconMetaModel, SearchModel } from '@/models/data';
 import { get } from './base';
 
 export const searchApi = {
-  search(q: string, page: number, per = 10) {
+  keyword(q: string, page: number, per = 10) {
     return get<SearchModel>(`${API_URL}/api/appInfo`, {
       params: {
         q,

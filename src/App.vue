@@ -12,13 +12,16 @@ const data = ref<SearchItemModel[]>([]);
 const kw = ref('');
 const loadingText = ref('loading');
 const loading = ref(false);
-const typeSelectCnf = [
+const typeSelectCnf: {
+  value: keyof typeof searchApi;
+  label: string;
+}[] = [
   {
     value: 'keyword',
     label: '关键词',
   },
   {
-    value: 'regexp',
+    value: 'regex',
     label: '正则表达式',
   },
   {
@@ -35,7 +38,22 @@ const searchType = ref(typeSelectCnf[0].value);
 
 async function handleSearch(kw: string) {
   loading.value = true;
-  const { items } = (await searchApi.search(kw, 1, 20)).data;
+  let items = {} as SearchItemModel[];
+  switch (searchType.value) {
+    case 'keyword':
+      items = (await searchApi.keyword(kw, 1, 30)).data.items;
+      break;
+    case 'regex':
+      items = (await searchApi.regex(kw, 1, 30)).data.items;
+      break;
+    case 'view':
+      items = (await searchApi.view(1, 30)).data.items;
+      break;
+    // case 'signature':
+    //   break;
+    default:
+      break;
+  }
   data.value = items;
   loading.value = false;
 }
@@ -43,25 +61,30 @@ async function handleSearch(kw: string) {
 
 <template>
   <div class="test">
-    <h1>App Tracker For Iconpack!</h1>
+    <h1 class="app-title">App Tracker For Iconpack!</h1>
     <div class="form">
-      <type-select v-model="searchType" :options="typeSelectCnf" />
+      <type-select
+        class="search-type"
+        v-model="searchType"
+        :options="typeSelectCnf"
+      />
       <input-box
         v-model="kw"
         @enter="handleSearch(kw)"
         placeholder="Keyword"
         type="text"
       />
-      <button @click="handleSearch(kw)">搜索</button>
+      <button class="submit-btn" @click="handleSearch(kw)">搜索</button>
     </div>
   </div>
-  <div v-loading:[loadingText]="loading">
+  <div class="list-wrapper" v-loading:[loadingText]="loading">
     <item-list v-if="!loading && data.length" :items="data" class="res-list" />
   </div>
   <data-pagination />
-  <button @click="messageAlert(h('h1', null, h('a', null, '有内鬼')))">
+  <button @click="messageAlert(h('h1', null, h('a', null, '哈哈')))">
     弹出消息
   </button>
+  <footer>©2022-2022&nbsp;Indusy&nbsp;Oblatum&nbsp;反馈群：868795356</footer>
 </template>
 
 <style lang="scss" scoped>
@@ -74,6 +97,10 @@ async function handleSearch(kw: string) {
     text-align: center;
   }
 
+  .app-title {
+    color: #6f79ff;
+  }
+
   .form {
     display: flex;
     justify-content: center;
@@ -83,15 +110,23 @@ async function handleSearch(kw: string) {
     button {
       padding: 10px;
     }
+
+    .submit-btn {
+      background-color: #858dff;
+      border: 0;
+      color: #ffffff;
+      border-radius: 10px;
+      cursor: pointer;
+    }
   }
 }
 
-.res-list {
-  max-height: calc(100vh - 180px);
-  overflow-y: scroll;
+.list-wrapper {
   box-sizing: border-box;
-  padding: 20px;
-  background-color: #f4f3fc;
-  background-origin: content-box;
+  padding: 10px;
+  .res-list {
+    max-height: calc(100vh - 180px);
+    // background-color: rgb(250, 249, 255);
+  }
 }
 </style>

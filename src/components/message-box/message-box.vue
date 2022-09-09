@@ -26,7 +26,7 @@ defineExpose({
 .message-box {
   width: 100vw;
   box-sizing: border-box;
-  background-color: rgb(127, 102, 219);
+  background-color: #858dff;
   padding: 8px 5px;
   position: absolute;
   top: 0;
