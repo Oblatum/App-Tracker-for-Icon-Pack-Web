@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { computed, h, onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import ItemList from '@/components/item-list/item-list.vue';
-import DataPagination from '@/components/data-pagination/data-pagination.vue';
+// import DataPagination from '@/components/data-pagination/data-pagination.vue';
 import TypeSelect from './components/type-select/type-select.vue';
 import InputBox from './components/input-box/input-box.vue';
 import { searchApi } from './services/apis';
@@ -10,6 +10,7 @@ import { debounce } from 'lodash-es';
 
 const data = ref<SearchItemModel[]>([]);
 const kw = ref('');
+// const page = ref(1);
 const itemListWrapRef = ref<HTMLElement>(null);
 
 const vh = ref(document.documentElement.clientHeight);
@@ -59,16 +60,16 @@ async function handleSearch(kw: string) {
   let items = {} as SearchItemModel[];
   switch (searchType.value) {
     case 'keyword':
-      items = (await searchApi.keyword(kw, 1, 30)).data.items;
+      items = (await searchApi.keyword(kw, 1, 2147483647)).data.items;
       break;
     case 'regex':
-      items = (await searchApi.regex(kw, 1, 30)).data.items;
+      items = (await searchApi.regex(kw, 1, 2147483647)).data.items;
       break;
     case 'view':
-      items = (await searchApi.view(1, 30)).data.items;
+      items = (await searchApi.view(1, 2147483647)).data.items;
       break;
     case 'signature':
-      items = (await searchApi.signature(kw, 30)).data.items;
+      items = (await searchApi.signature(kw, 2147483647)).data.items;
       break;
     default:
       break;
@@ -114,7 +115,7 @@ onMounted(() => {
       class="res-list"
     />
   </div>
-  <data-pagination />
+  <!-- <data-pagination v-model="page" v-if="!loading && data.length" /> -->
   <!-- <button @click="messageAlert(h('h1', null, h('a', null, '哈哈')))">
     弹出消息
   </button> -->
