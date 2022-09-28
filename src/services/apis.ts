@@ -1,9 +1,10 @@
 import { API_URL } from '@/constants/meta';
+import type { IconMetaModel, SearchModel } from '@/models/data';
 import { get } from './base';
 
 export const searchApi = {
-  search(q: string, page: number, per = 10) {
-    return get(`${API_URL}/api/appInfo`, {
+  keyword(q: string, page: number, per = 10) {
+    return get<SearchModel>(`${API_URL}/api/appInfo`, {
       params: {
         q,
         page,
@@ -13,7 +14,7 @@ export const searchApi = {
   },
 
   regex(regex: string, page: number, per = 10) {
-    return get(`${API_URL}/api/appInfo`, {
+    return get<SearchModel>(`${API_URL}/api/appInfo`, {
       params: {
         regex,
         page,
@@ -23,7 +24,16 @@ export const searchApi = {
   },
 
   view(page: number, per = 10) {
-    return get(`${API_URL}/api/appInfo`, {
+    return get<SearchModel>(`${API_URL}/api/appInfo`, {
+      params: {
+        page,
+        per,
+      },
+    });
+  },
+
+  signature(signature: string, page: number, per = 10) {
+    return get<SearchModel>(`${API_URL}/api/appInfo/${signature}`, {
       params: {
         page,
         per,
@@ -34,7 +44,7 @@ export const searchApi = {
 
 export const iconApi = {
   meta(appId: string) {
-    return get(`${API_URL}/api/icon`, {
+    return get<IconMetaModel>(`${API_URL}/api/icon`, {
       params: {
         appId,
       },
