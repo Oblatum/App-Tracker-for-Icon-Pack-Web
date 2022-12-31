@@ -1,23 +1,30 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "strict": true,
     "jsx": "preserve",
-    "sourceMap": true,
+    "module": "ES2015",
+    "moduleResolution": "Node",
+    "baseUrl": ".",
+    "types": ["node"],
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "lib": ["ESNext", "DOM"],
-    "skipLibCheck": true,
-    "types": ["element-plus/global"],
-    "baseUrl": ".",
+    "strict": true,
+    "noImplicitReturns": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"],
+      "@images/*": ["./src/assets/images/*"],
+      "@styles/*": ["./src/assets/scss/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "vue-i18n.config.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  },
+  "include": ["./src/**/*", "./typings"]
 }
