@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "jsx": "preserve",
-    "module": "ES2015",
+    "module": "ES2020",
     "moduleResolution": "Node",
     "baseUrl": ".",
     "types": ["node"],
@@ -10,11 +10,11 @@
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "lib": ["ESNext", "DOM"],
+    "lib": ["ESNext", "DOM", "WebWorker"],
     "strict": true,
     "noImplicitReturns": true,
     "noImplicitAny": true,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "paths": {
       "@/*": ["./src/*"],
       "@images/*": ["./src/assets/images/*"],

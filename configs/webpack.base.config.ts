@@ -1,10 +1,11 @@
 import path from 'path';
 import { VueLoaderPlugin } from 'vue-loader';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import { Configuration, DefinePlugin } from 'webpack';
-import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
+import { Configuration, DefinePlugin, ProvidePlugin } from 'webpack';
+import { default as TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
+import { InjectManifest } from 'workbox-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import { ProvidePlugin } from 'webpack';
 
 const isDevMode = process.env.NODE_ENV !== 'production';
 
@@ -67,10 +68,6 @@ const config: Configuration = {
         ],
       },
       {
-        test: /\.html$/,
-        loader: 'html-loader',
-      },
-      {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
       },
@@ -87,11 +84,26 @@ const config: Configuration = {
   plugins: [
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
+      title: 'App Tracker For Iconpack',
       filename: 'index.html',
       template: path.resolve(__dirname, '../public/index.html'),
     }),
     new MiniCssExtractPlugin({
       filename: 'style.css',
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, '../public'),
+          globOptions: {
+            ignore: [path.resolve(__dirname, '../public/index.html')],
+          },
+        },
+      ],
+    }),
+    new InjectManifest({
+      swSrc: path.resolve(__dirname, '../src/sw.ts'),
+      swDest: 'sw.js',
     }),
     new ProvidePlugin({
       process: 'process/browser.js',

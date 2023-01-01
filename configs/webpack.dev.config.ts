@@ -11,7 +11,12 @@ const config: Configuration = {
   devtool: 'inline-source-map',
   devServer: {
     static: {
-      directory: path.join(__dirname, "../dist"),
+      directory: path.join(__dirname, '../dist'),
+    },
+    client: {
+      overlay: {
+        warnings: false,
+      },
     },
     compress: true,
     port: 2333,

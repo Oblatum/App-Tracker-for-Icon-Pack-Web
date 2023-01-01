@@ -1,4 +1,5 @@
-import { type Configuration, ProgressPlugin } from 'webpack';
+import type { Configuration } from 'webpack';
+import WebpackBar from 'webpackbar';
 import TerserPlugin from 'terser-webpack-plugin';
 import { merge } from 'webpack-merge';
 
@@ -14,7 +15,7 @@ const config: Configuration = {
       }),
     ],
   },
-  plugins: [new ProgressPlugin()],
+  plugins: [new WebpackBar()],
 };
 
 export default merge(config, baseConfig);

@@ -20,7 +20,7 @@ watch(
   }
 );
 
-const blockRef = ref<HTMLElement>(null!);
+const blockRef = ref<HTMLElement>(null);
 </script>
 
 <template>
@@ -30,17 +30,17 @@ const blockRef = ref<HTMLElement>(null!);
   <label :style="`background-color: ${bodyColor}`" class="float-color-picker">
     <input v-model="bodyColor" type="color" />
   </label>
-  <button style="display: block; margin: auto" @click="changeTitle">反转了</button>
+  <button style="display: block; margin: auto; width: 100px; height: 100px" @click="changeTitle">反转了</button>
   <button
+    ref="blockRef"
+    style="background-image: linear-gradient(red, blue); width: 200px"
+    :style="`height: ${100 * count}px`"
     @click="
       () => {
         count++;
         ($refs.blockRef as HTMLButtonElement).style.transform = `rotate(${count}deg)`;
       }
     "
-    style="background-image: linear-gradient(red, blue); width: 200px"
-    :style="`height: ${100 * count}px`"
-    ref="blockRef"
   ></button>
 </template>
 
