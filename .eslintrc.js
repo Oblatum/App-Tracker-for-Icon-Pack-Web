@@ -32,5 +32,6 @@ module.exports = {
     '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/triple-slash-reference': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
+    'vue/multi-word-component-names': 'off',
   },
 };
