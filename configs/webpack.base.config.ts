@@ -6,6 +6,9 @@ import { default as TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 import { InjectManifest } from 'workbox-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import AutoImport from 'unplugin-auto-import/webpack';
+import Components from 'unplugin-vue-components/webpack';
+import { TDesignResolver } from 'unplugin-vue-components/resolvers';
 
 const isDevMode = process.env.NODE_ENV !== 'production';
 
@@ -38,7 +41,7 @@ const config: Configuration = {
         ],
       },
       {
-        test: /\.scss$/i,
+        test: [/\.scss$/i, /\.css$/],
         use: [
           {
             loader: isDevMode ? 'vue-style-loader' : MiniCssExtractPlugin.loader,
@@ -99,6 +102,20 @@ const config: Configuration = {
             ignore: [path.resolve(__dirname, '../public/index.html')],
           },
         },
+      ],
+    }),
+    AutoImport({
+      resolvers: [
+        TDesignResolver({
+          library: 'vue-next',
+        }),
+      ],
+    }),
+    Components({
+      resolvers: [
+        TDesignResolver({
+          library: 'vue-next',
+        }),
       ],
     }),
     new InjectManifest({
