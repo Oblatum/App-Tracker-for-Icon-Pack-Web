@@ -33,5 +33,6 @@ module.exports = {
     '@typescript-eslint/triple-slash-reference': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
     'vue/multi-word-component-names': 'off',
+    'vue/component-definition-name-casing': ['error', 'kebab-case'],
   },
 };

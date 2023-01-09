@@ -8,7 +8,12 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import AutoImport from 'unplugin-auto-import/webpack';
 import Components from 'unplugin-vue-components/webpack';
-import { TDesignResolver } from 'unplugin-vue-components/resolvers';
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
+
+import dotenv from 'dotenv';
+dotenv.config({
+  path: process.env.NODE_ENV === 'production' ? undefined : `.env.${process.env.NODE_ENV}`,
+});
 
 const isDevMode = process.env.NODE_ENV !== 'production';
 
@@ -25,6 +30,12 @@ const config: Configuration = {
       {
         test: /\.vue$/,
         loader: 'vue-loader',
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: [{ loader: 'babel-loader' }],
       },
       {
         test: /\.ts$/,
@@ -35,7 +46,7 @@ const config: Configuration = {
             loader: 'ts-loader',
             options: {
               appendTsSuffixTo: [/\.vue$/],
-              ignoreDiagnostics: isDevMode ? [] : [7006],
+              ignoreDiagnostics: isDevMode ? [] : [7006, 2322, 2769, 2345, 7031],
             },
           },
         ],
@@ -65,7 +76,7 @@ const config: Configuration = {
           {
             loader: 'sass-loader',
             options: {
-              additionalData: ``,
+              additionalData: `@use '@styles/var.scss' as *;`,
             },
           },
         ],
@@ -94,6 +105,20 @@ const config: Configuration = {
     new MiniCssExtractPlugin({
       filename: 'style.css',
     }),
+    AutoImport({
+      resolvers: [
+        ElementPlusResolver({
+          importStyle: 'sass',
+        }),
+      ],
+    }),
+    Components({
+      resolvers: [
+        ElementPlusResolver({
+          importStyle: 'sass',
+        }),
+      ],
+    }),
     new CopyWebpackPlugin({
       patterns: [
         {
@@ -102,20 +127,6 @@ const config: Configuration = {
             ignore: [path.resolve(__dirname, '../public/index.html')],
           },
         },
-      ],
-    }),
-    AutoImport({
-      resolvers: [
-        TDesignResolver({
-          library: 'vue-next',
-        }),
-      ],
-    }),
-    Components({
-      resolvers: [
-        TDesignResolver({
-          library: 'vue-next',
-        }),
       ],
     }),
     new InjectManifest({
@@ -128,6 +139,7 @@ const config: Configuration = {
     new DefinePlugin({
       __VUE_OPTIONS_API__: true,
       __VUE_PROD_DEVTOOLS__: false,
+      'process.env.API_URL': JSON.stringify(process.env.API_URL),
     }),
   ],
 };
