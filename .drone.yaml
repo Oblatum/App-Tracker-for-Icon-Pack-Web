@@ -1,0 +1,9 @@
+kind: pipeline
+name: app-tracker-web
+
+steps:
+- name: frontend
+  image: node:18-alpine
+  commands:
+  - npm install
+  - npm run build

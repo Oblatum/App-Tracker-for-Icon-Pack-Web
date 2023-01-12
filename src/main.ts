@@ -19,6 +19,3 @@ window.addEventListener('unhandledrejection', (ev) => {
 if (process.env.NODE_ENV === 'production') {
   import('./register-sw');
 }
-
-import { appfilter } from './views/home/utils';
-(window as any).appfilter = appfilter;
