@@ -1,16 +1,12 @@
 import { createApp } from 'vue';
 import App from './app.vue';
 import router from './router';
-
+import '@styles/element/index.scss';
 import '@styles/all.scss';
-import 'element-plus/dist/index.css';
 import { ElMessage } from 'element-plus';
+
 const app = createApp(App);
 app.use(router).mount('#app');
-
-if (process.env.NODE_ENV === 'production') {
-  import('./register-sw');
-}
 
 window.addEventListener('unhandledrejection', (ev) => {
   if (typeof ev.reason === 'string') {
@@ -19,3 +15,10 @@ window.addEventListener('unhandledrejection', (ev) => {
     ElMessage.error(ev.reason.message);
   }
 });
+
+if (process.env.NODE_ENV === 'production') {
+  import('./register-sw');
+}
+
+import { appfilter } from './views/home/utils';
+(window as any).appfilter = appfilter;

@@ -6,6 +6,7 @@ defineProps<{
   data: GetAppInfoResponse;
   currentPage: number;
   pageSize: number;
+  isLoading: boolean;
 }>();
 
 defineEmits<{
@@ -21,7 +22,7 @@ async function copy(text: string) {
 
 <template>
   <div class="info-list">
-    <el-table :data="data.items" height="500">
+    <el-table v-loading="isLoading" :data="data.items" height="500">
       <el-table-column prop="appName" label="应用名" width="200" />
       <el-table-column prop="packageName" label="包名" width="200" />
       <el-table-column prop="activityName" label="启动项" width="300" />

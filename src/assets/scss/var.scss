@@ -1,12 +1,4 @@
-@forward 'element-plus/theme-chalk/src/common/var.scss' with (
-  $colors: (
-    'primary': (
-      'base': #504ebc,
-    ),
-  )
-);
-
 :root {
-  --el-color-themed: #504ebc;
-  --el-color-themed-light-9: #b9b8ef;
+  --el-color-primary: #504ebc;
+  --el-color-primary-light-9: #b9b8ef;
 }

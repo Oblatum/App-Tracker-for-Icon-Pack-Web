@@ -9,6 +9,7 @@ const props = defineProps<{
   pageSize: number;
   keyword: string;
   searchType: string;
+  isLoading: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -16,6 +17,7 @@ const emit = defineEmits<{
   (name: 'update:current-page', event: number): void;
   (name: 'update:keyword', event: string): void;
   (name: 'update:search-type', event: string): void;
+  (name: 'update:is-loading', event: boolean): void;
 }>();
 
 const newSearchType = ref<'keyword' | 'regex'>('keyword');
@@ -44,6 +46,8 @@ async function fetchData(config?: { kw?: string; searchType?: 'keyword' | 'regex
   }
   kw ??= newKeyword.value;
   searchType ??= newSearchType.value;
+  emit('update:is-loading', true);
+  await nextTick();
   const { data } = await appInfo.getAppInfo(
     searchType === 'keyword'
       ? { q: kw, per: props.pageSize, page: props.currentPage }
@@ -53,6 +57,7 @@ async function fetchData(config?: { kw?: string; searchType?: 'keyword' | 'regex
           page: props.currentPage,
         }
   );
+  emit('update:is-loading', false);
   emit('update:data', data);
 }
 

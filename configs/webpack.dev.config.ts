@@ -1,22 +1,18 @@
-import type { Configuration } from 'webpack';
-import ForkTsCheckerPlugin from 'fork-ts-checker-webpack-plugin';
-import { merge } from 'webpack-merge';
-import 'webpack-dev-server';
-
-import baseConfig from './webpack.base.config';
 import path from 'path';
+import { Configuration } from 'webpack';
+import { merge } from 'webpack-merge';
+import ForkTsCheckerPlugin from 'fork-ts-checker-webpack-plugin';
+
+import 'webpack-dev-server';
+import baseConfig from './webpack.base.config';
 
 const config: Configuration = {
   mode: 'development',
+  stats: 'errors-warnings',
   devtool: 'inline-source-map',
   devServer: {
     static: {
       directory: path.join(__dirname, '../dist'),
-    },
-    client: {
-      overlay: {
-        warnings: false,
-      },
     },
     compress: true,
     port: 2333,

@@ -1,19 +1,13 @@
 import path from 'path';
-import { VueLoaderPlugin } from 'vue-loader';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import { Configuration, DefinePlugin, ProvidePlugin } from 'webpack';
+import { Configuration, ProvidePlugin, DefinePlugin } from 'webpack';
 import { default as TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
-import { InjectManifest } from 'workbox-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import AutoImport from 'unplugin-auto-import/webpack';
-import Components from 'unplugin-vue-components/webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { VueLoaderPlugin } from 'vue-loader';
+import AutoImportPlugin from 'unplugin-auto-import/webpack';
+import ComponentsPlugin from 'unplugin-vue-components/webpack';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
-
-import dotenv from 'dotenv';
-dotenv.config({
-  path: process.env.NODE_ENV === 'production' ? undefined : `.env.${process.env.NODE_ENV}`,
-});
 
 const isDevMode = process.env.NODE_ENV !== 'production';
 
@@ -33,26 +27,28 @@ const config: Configuration = {
         exclude: /node_modules/,
       },
       {
-        test: /\.js$/,
+        test: /\.m?js$/,
         exclude: /node_modules/,
-        use: [{ loader: 'babel-loader' }],
+        loader: 'babel-loader',
       },
       {
-        test: /\.ts$/,
+        test: /\.tsx?$/,
         exclude: /node_modules/,
         use: [
-          { loader: 'babel-loader' },
+          {
+            loader: 'babel-loader',
+          },
           {
             loader: 'ts-loader',
             options: {
+              happyPackMode: true,
               appendTsSuffixTo: [/\.vue$/],
-              ignoreDiagnostics: isDevMode ? [] : [7006, 2322, 2769, 2345, 7031],
             },
           },
         ],
       },
       {
-        test: [/\.scss$/i, /\.css$/],
+        test: /\.(scss|css)$/,
         use: [
           {
             loader: isDevMode ? 'vue-style-loader' : MiniCssExtractPlugin.loader,
@@ -67,7 +63,7 @@ const config: Configuration = {
                 localIdentName: '[hash:base64:8]-[path]-[name]-[local]',
               },
               sourceMap: isDevMode,
-              importLoaders: 1,
+              importLoaders: 2,
             },
           },
           {
@@ -82,42 +78,41 @@ const config: Configuration = {
         ],
       },
       {
-        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        test: /\.(png|svg|jpg|jpeg|gif|webp)$/i,
         type: 'asset/resource',
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/i,
         type: 'asset/resource',
       },
+      {
+        test: /\.(txt|md)$/i,
+        type: 'asset/source',
+      },
     ],
   },
   resolve: {
-    extensions: ['.vue', '.ts', '.js'],
+    extensions: ['.vue', '.tsx', '.ts', '.js'],
     plugins: [new TsconfigPathsPlugin()],
   },
   plugins: [
     new VueLoaderPlugin(),
+    AutoImportPlugin({
+      resolvers: [ElementPlusResolver()],
+    }),
+    ComponentsPlugin({
+      resolvers: [ElementPlusResolver()],
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'style.css',
+    }),
     new HtmlWebpackPlugin({
       title: 'App Tracker For Iconpack',
       filename: 'index.html',
       template: path.resolve(__dirname, '../public/index.html'),
     }),
-    new MiniCssExtractPlugin({
-      filename: 'style.css',
-    }),
-    AutoImport({
-      resolvers: [
-        ElementPlusResolver({
-          importStyle: 'sass',
-        }),
-      ],
-    }),
-    Components({
-      resolvers: [
-        ElementPlusResolver({
-          importStyle: 'sass',
-        }),
-      ],
+    new ProvidePlugin({
+      process: 'process/browser.js',
     }),
     new CopyWebpackPlugin({
       patterns: [
@@ -128,13 +123,6 @@ const config: Configuration = {
           },
         },
       ],
-    }),
-    new InjectManifest({
-      swSrc: path.resolve(__dirname, '../src/sw.ts'),
-      swDest: 'sw.js',
-    }),
-    new ProvidePlugin({
-      process: 'process/browser.js',
     }),
     new DefinePlugin({
       __VUE_OPTIONS_API__: true,
