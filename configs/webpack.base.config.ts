@@ -8,16 +8,25 @@ import { VueLoaderPlugin } from 'vue-loader';
 import AutoImportPlugin from 'unplugin-auto-import/webpack';
 import ComponentsPlugin from 'unplugin-vue-components/webpack';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
+import dotenv from 'dotenv';
+import dotenvExpand from 'dotenv-expand';
 
 const isDevMode = process.env.NODE_ENV !== 'production';
+
+const envConfig = dotenv.config({
+  path: isDevMode ? `.env.${process.env.NODE_ENV}` : '.env',
+});
+
+dotenvExpand.expand(envConfig);
 
 const config: Configuration = {
   entry: path.resolve(__dirname, '../src/main.ts'),
   output: {
-    filename: 'main.js',
+    filename: '[name]-[chunkhash].js',
     path: path.resolve(__dirname, '../dist'),
     publicPath: '/',
     clean: true,
+    hashDigestLength: 16,
   },
   module: {
     rules: [
@@ -41,7 +50,7 @@ const config: Configuration = {
           {
             loader: 'ts-loader',
             options: {
-              happyPackMode: true,
+              happyPackMode: !isDevMode,
               appendTsSuffixTo: [/\.vue$/],
             },
           },
@@ -72,7 +81,7 @@ const config: Configuration = {
           {
             loader: 'sass-loader',
             options: {
-              additionalData: `@use '@styles/var.scss' as *;`,
+              additionalData: `@use '@styles/element/index.scss' as *;`,
             },
           },
         ],
@@ -98,10 +107,18 @@ const config: Configuration = {
   plugins: [
     new VueLoaderPlugin(),
     AutoImportPlugin({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [
+        ElementPlusResolver({
+          importStyle: 'sass',
+        }),
+      ],
     }),
     ComponentsPlugin({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [
+        ElementPlusResolver({
+          importStyle: 'sass',
+        }),
+      ],
     }),
     new MiniCssExtractPlugin({
       filename: 'style.css',

@@ -10,6 +10,9 @@ const config: Configuration = {
   mode: 'development',
   stats: 'errors-warnings',
   devtool: 'inline-source-map',
+  optimization: {
+    runtimeChunk: 'single',
+  },
   devServer: {
     static: {
       directory: path.join(__dirname, '../dist'),

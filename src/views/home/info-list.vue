@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { GetAppInfoResponse } from '@/api/app-info';
 import { ElMessage } from 'element-plus';
+import { appfilter } from './utils';
 
 defineProps<{
   data: GetAppInfoResponse;
@@ -28,8 +29,13 @@ async function copy(text: string) {
       <el-table-column prop="activityName" label="启动项" width="300" />
       <el-table-column label="操作" fixed="right">
         <template #default="{ row }">
-          <el-button type="primary" size="small" @click="copy(row.appName)"> 复制 </el-button>
-          <el-button type="primary" size="small"> 就不复制 </el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="copy(appfilter(row.appName, row.packageName, row.activityName))"
+          >
+            复制 appfilter
+          </el-button>
         </template>
       </el-table-column>
     </el-table>

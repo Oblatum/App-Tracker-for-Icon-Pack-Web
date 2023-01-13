@@ -5,6 +5,7 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --config configs/webpack.prod.config.ts",
     "dev": "cross-env NODE_ENV=development webpack serve --config configs/webpack.dev.config.ts",
+    "start": "http-server dist",
     "lint": "eslint \"src/**/*.{js,jsx,ts,tsx,vue}\"",
     "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx,vue}\"",
     "commit": "cz",
@@ -30,6 +31,7 @@
     "css-minimizer-webpack-plugin": "^4.2.2",
     "cz-conventional-changelog": "^3.3.0",
     "dotenv": "^16.0.3",
+    "dotenv-expand": "^10.0.0",
     "eslint": "^8.31.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-import-resolver-typescript": "^3.5.2",
@@ -39,6 +41,7 @@
     "fork-ts-checker-webpack-plugin": "^7.2.14",
     "html-loader": "^4.2.0",
     "html-webpack-plugin": "^5.5.0",
+    "http-server": "^14.1.1",
     "husky": "^8.0.0",
     "lint-staged": "^13.1.0",
     "mini-css-extract-plugin": "^2.7.2",

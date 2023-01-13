@@ -1,9 +1,13 @@
 import { createApp } from 'vue';
 import App from './app.vue';
 import router from './router';
-import '@styles/element/index.scss';
-import '@styles/all.scss';
 import { ElMessage } from 'element-plus';
+
+import 'element-plus/theme-chalk/el-message.css';
+import 'element-plus/theme-chalk/el-message-box.css';
+import '@styles/all.scss';
+
+import './register-sw';
 
 const app = createApp(App);
 app.use(router).mount('#app');
@@ -15,7 +19,3 @@ window.addEventListener('unhandledrejection', (ev) => {
     ElMessage.error(ev.reason.message);
   }
 });
-
-if (process.env.NODE_ENV === 'production') {
-  import('./register-sw');
-}

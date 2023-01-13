@@ -2,7 +2,8 @@ import { slugify } from 'transliteration';
 
 export function appfilter(appName: string, packageName: string, activityName: string) {
   return `<!-- ${appName} -->
-  <item component="ComponentInfo{${packageName}/${activityName}}" drawable="${latinize(appName)}"/>`;
+<item component="ComponentInfo{${packageName}/${activityName}}" drawable="${latinize(appName)}"/>
+`;
 }
 
 function latinize(str: string) {

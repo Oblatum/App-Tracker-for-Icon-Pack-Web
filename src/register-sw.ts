@@ -1,13 +1,15 @@
 import { Workbox } from 'workbox-window';
+import { ElMessageBox } from 'element-plus';
 
 if ('serviceWorker' in navigator) {
-  const wb = new Workbox('sw.js');
-  wb.addEventListener('installed', (event) => {
-    if (event.isUpdate) {
-      if (confirm('检查有新版，是否更新最新?')) {
+  window.addEventListener('load', () => {
+    const wb = new Workbox('sw.js');
+    wb.addEventListener('installed', async (event) => {
+      if (event.isUpdate) {
+        await ElMessageBox.confirm('检测到新版本，是否更新?');
         window.location.reload();
       }
-    }
+    });
+    wb.register();
   });
-  wb.register();
 }
