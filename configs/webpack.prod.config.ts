@@ -2,7 +2,6 @@ import { Configuration } from 'webpack';
 import { merge } from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
-import { InjectManifest } from 'workbox-webpack-plugin';
 import WebpackBar from 'webpackbar';
 
 import baseConfig from './webpack.base.config';
@@ -47,12 +46,6 @@ const config: Configuration = {
     },
   },
   plugins: [
-    new InjectManifest({
-      swSrc: path.resolve(__dirname, '../src/sw.ts'),
-      swDest: 'sw.js',
-      exclude: [/\.map$/],
-      maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
-    }),
     new WebpackBar({
       color: '#504ebc',
     }),

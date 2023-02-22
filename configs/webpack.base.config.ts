@@ -5,9 +5,6 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { VueLoaderPlugin } from 'vue-loader';
-import AutoImportPlugin from 'unplugin-auto-import/webpack';
-import ComponentsPlugin from 'unplugin-vue-components/webpack';
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
 import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
 
@@ -80,9 +77,6 @@ const config: Configuration = {
           },
           {
             loader: 'sass-loader',
-            options: {
-              additionalData: `@use '@styles/element/index.scss' as *;`,
-            },
           },
         ],
       },
@@ -106,20 +100,6 @@ const config: Configuration = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    AutoImportPlugin({
-      resolvers: [
-        ElementPlusResolver({
-          importStyle: 'sass',
-        }),
-      ],
-    }),
-    ComponentsPlugin({
-      resolvers: [
-        ElementPlusResolver({
-          importStyle: 'sass',
-        }),
-      ],
-    }),
     new MiniCssExtractPlugin({
       filename: 'style.css',
     }),

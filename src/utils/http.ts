@@ -1,6 +1,6 @@
-import { APP_META } from '@/constants/app-meta';
+import { API_URL } from '@/constants';
 import axios from 'axios';
 
-axios.defaults.baseURL = APP_META.API_URL;
+axios.defaults.baseURL = API_URL;
 
-export { axios as http };
+export default axios;

@@ -30,6 +30,7 @@ module.exports = {
     'import/no-unresolved': 'error',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/ban-types': 'off',
+    '@typescript-eslint/no-namespace': 'off',
     '@typescript-eslint/triple-slash-reference': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
     'vue/multi-word-component-names': 'off',
