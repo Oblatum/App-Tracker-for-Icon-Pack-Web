@@ -1,8 +1,6 @@
 import { VitePWA } from "vite-plugin-pwa";
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig } from "vite";
 // import icon from "./src/favicon.png";
-
-const baseUrl = loadEnv("", process.cwd()).VITE_APP_BASE_API;
 
 export default defineConfig({
   plugins: [
@@ -18,21 +16,21 @@ export default defineConfig({
         theme_color: "#504ebc",
         icons: [
           {
-            src: "pwa-192x192.png",
-            sizes: "192x192",
-            type: "image/png",
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
           },
           {
-            src: "pwa-512x512.png",
-            sizes: "512x512",
-            type: "image/png",
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
           },
           {
-            src: "pwa-512x512.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "any maskable",
-          },
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable',
+          }
         ],
         start_url: "/",
         background_color: "#504ebc",
@@ -40,13 +38,4 @@ export default defineConfig({
       },
     }),
   ],
-  server: {
-    proxy: {
-      "/api": {
-        target: baseUrl,
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ""),
-      },
-    },
-  },
 });
