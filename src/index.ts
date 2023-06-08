@@ -1,16 +1,15 @@
 import "./style.scss";
 import "@fortawesome/fontawesome-free/css/all.css";
-import {
-  appIconApi,
-  appInfoApi,
-  getallApi,
-  regexApi,
-  signatureAppInfoApi,
-} from "./api";
-import { appInfoJSON, IconJSON } from "./types";
+import { appIconApi, getAppInfoApi } from "./api";
+import { appInfoJSON } from "./types";
 import { registerSW } from "virtual:pwa-register";
 if ("serviceWorker" in navigator) {
   registerSW();
+}
+
+enum SearchType {
+  Keyword = 0,
+  Regex = 1,
 }
 
 let yearEl = document.getElementById("year")!;
@@ -23,22 +22,12 @@ let searchTypeAttrs = [
   {
     placeholder: "关键词……",
     disabled: false,
-    api: appInfoApi,
+    api: getAppInfoApi,
   },
   {
     placeholder: "正则表达式……",
     disabled: false,
-    api: regexApi,
-  },
-  {
-    placeholder: "打咩打咩！❌",
-    disabled: true,
-    api: getallApi,
-  },
-  {
-    placeholder: "Signature...",
-    disabled: false,
-    api: signatureAppInfoApi,
+    api: getAppInfoApi,
   },
 ];
 
@@ -66,7 +55,6 @@ yearEl.textContent = new Date().getFullYear().toString();
  * 监听
  * **/
 
-
 // 注册关闭按钮
 for (let index = 0; index < xqEls.length; index++) {
   xqEls[index].addEventListener("click", (ev) => {
@@ -83,7 +71,7 @@ formEl.addEventListener("submit", (ev) => {
   let typeIndex = +searchTypeEl.value;
   let api = searchTypeAttrs[typeIndex].api;
   switch (typeIndex) {
-    case 0:
+    case SearchType.Keyword:
       setLoadingAn().then(() => {
         api
           .request({
@@ -102,7 +90,7 @@ formEl.addEventListener("submit", (ev) => {
           });
       });
       break;
-    case 1:
+    case SearchType.Regex:
       setLoadingAn().then(() => {
         api
           .request({
@@ -115,40 +103,6 @@ formEl.addEventListener("submit", (ev) => {
           })
           .then((json) => {
             conTable(json, "正则").then((tb) => {
-              resultAreaEl.innerHTML = tb;
-              document.dispatchEvent(domUpdateEvent);
-            });
-          });
-      });
-      break;
-    case 2:
-      setLoadingAn().then(() => {
-        api
-          .request()
-          .then((response) => {
-            return response.json();
-          })
-          .then((json) => {
-            conTable(json, "浏览").then((tb) => {
-              resultAreaEl.innerHTML = tb;
-              document.dispatchEvent(domUpdateEvent);
-            });
-          });
-      });
-      break;
-    case 3:
-      setLoadingAn().then(() => {
-        api
-          .request({
-            path: {
-              signature: keywordEl.value.trim(),
-            },
-          })
-          .then((response) => {
-            return response.json();
-          })
-          .then((json) => {
-            conTable(json, "来源").then((tb) => {
               resultAreaEl.innerHTML = tb;
               document.dispatchEvent(domUpdateEvent);
             });
@@ -471,15 +425,15 @@ function conConMenu() {
         appIconApi
           .request({
             query: {
-              appId: encodeURIComponent(appPackageName.trim()),
+              packageName: encodeURIComponent(appPackageName.trim()),
             },
           })
           .then((response) => {
-            return response.json();
+            return response.blob();
           })
-          .then((json) => {
-            let imageInfo = json as IconJSON;
-            iconEl.src = imageInfo.image;
+          .then((icon) => {
+            const url = URL.createObjectURL(icon);
+            iconEl.src = url;
             iconEl.onload = () => {
               appIconWrapEl.replaceChildren(iconEl);
               iconEl.addEventListener("click", () => {
