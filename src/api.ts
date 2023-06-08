@@ -1,4 +1,3 @@
-
 interface fetchOptions {
   query?: apiQuery;
   body?: Object;
@@ -20,23 +19,28 @@ interface apiQuery {
   regex?: string;
   per?: string;
   page?: string;
-  appId?: string;
+  packageName?: string;
 }
 
-interface apiBody {}
+const mode = import.meta.env.MODE;
 
 class API {
-  baseurl = import.meta.env.VITE_APP_BASE_API;
+  baseurl = "/api";
   url: string;
   opts: fetchOptions;
 
   constructor(url: string, opts: fetchOptions) {
     this.url = url;
     this.opts = opts;
+
+    if (mode === "development") {
+      this.baseurl = "/api";
+    } else {
+      this.baseurl = import.meta.env.VITE_APP_BASE_API;
+    }
   }
-  async request({ query, body, path }: fetchOptions = {}, method = httpMethods.get) {
+  async request({ query, path }: fetchOptions = {}, method = httpMethods.get) {
     let url = this.baseurl + this.url;
-    let code: number;
     if (this.opts.path) {
       const pathRegex = /\{(.*?)}/;
       url.match(pathRegex)?.forEach((k) => {
@@ -70,56 +74,22 @@ class API {
     }
 
     return await fetch(url, {
-      method
-    })
+      method,
+    });
   }
 }
 
-let appInfoApi = new API("/appInfo", {
-  query: {
-    q: "app-tracker",
-    per: "2147483647",
-    page: "1",
-  },
-});
-
-let getallApi = new API("/appInfo", {
+const getAppInfoApi = new API("/api/appinfo", {
   query: {
     per: "2147483647",
     page: "1",
   },
 });
 
-let regexApi = new API("/appInfo", {
+let appIconApi = new API("/api/icon/local", {
   query: {
-    regex: "app-tracker",
-    per: "2147483647",
-    page: "1",
+    packageName: "",
   },
 });
 
-// 尚未开放关键词搜索
-let signatureAppInfoApi = new API("/{signature}/appInfo", {
-  query: {
-    per: "2147483647",
-    page: "1",
-  },
-  path: {
-    signature: "app-tracker",
-  },
-});
-
-let appIconApi = new API("/icon", {
-  query: {
-    appId: "",
-  },
-});
-
-export {
-  appInfoApi,
-  getallApi,
-  regexApi,
-  appIconApi,
-  signatureAppInfoApi,
-  httpMethods,
-};
+export { appIconApi, getAppInfoApi, httpMethods };

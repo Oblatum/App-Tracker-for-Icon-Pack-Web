@@ -15,8 +15,3 @@ export interface appInfoJSON {
   items: ResItem[];
   metadata: ResMetadata;
 }
-export interface IconJSON {
-  image: string;
-  name: string;
-  url: string;
-}
